@@ -1,0 +1,22 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="panel" style="max-width:720px;margin:0 auto;">
+    <h1 style="margin:0 0 10px 0;">Something went wrong</h1>
+    <p style="margin:0;color:var(--muted);line-height:1.6;">
+        Your request could not be completed right now. Please try again.
+    </p>
+
+    @if (Model.ShowRequestId)
+    {
+        <p style="margin:14px 0 0 0;">
+            <span class="muted">Reference:</span> <code>@Model.RequestId</code>
+        </p>
+    }
+
+    <p class="muted" style="margin-top:14px;">
+        If this keeps happening, please contact support with the reference above.
+    </p>
+</div>

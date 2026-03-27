@@ -1,0 +1,35 @@
+@model Ecommerce.Web.ViewModels.AdminCategoryFormViewModel
+@{
+    var isEdit = Model.CategoryId.HasValue && Model.CategoryId.Value > 0;
+    ViewData["Title"] = isEdit ? "Edit category" : "Create category";
+    var action = isEdit ? $"/Admin/Categories/Edit/{Model.CategoryId}" : "/Admin/Categories/Create";
+}
+
+<section class="page">
+    <div class="container">
+        <h1 class="pageTitle">@ViewData["Title"]</h1>
+
+        <form method="post" action="@action" class="form">
+            @Html.AntiForgeryToken()
+            <div class="formField">
+                <label>Category name</label>
+                <input name="Category.Name" value="@Model.Category.Name" class="input" />
+            </div>
+
+            <div class="formField">
+                <label>Description</label>
+                <textarea name="Category.Description" class="input">@Model.Category.Description</textarea>
+            </div>
+
+            <div class="formRow">
+                <label>
+                    <input type="checkbox" name="Category.IsActive" value="true" @(Model.Category.IsActive ? "checked" : "") />
+                    <span>Active</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btnPrimary" style="margin-top:12px;">Save</button>
+        </form>
+    </div>
+</section>
+

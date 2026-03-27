@@ -1,0 +1,72 @@
+@model Ecommerce.Application.Shared.PagedResult<Ecommerce.Application.DTOs.ProductListItemDto>
+
+@if (Model.Items.Count == 0)
+{
+    <div class="emptyState">No products found.</div>
+}
+else
+{
+    <div class="productGrid" role="list">
+        @foreach (var p in Model.Items)
+        {
+            <article class="productCard" role="listitem">
+                <a class="productMedia" href="/Catalog/Details/@p.Id" aria-label="View @p.Name">
+                    <img src="@p.ImageUrl" alt="@p.Name" loading="lazy" />
+                </a>
+                <div class="productBody">
+                    <h3 class="productTitle">@p.Name</h3>
+                    <div class="productMeta">
+                        @{
+                            decimal regularPrice = p.RegularPrice;  
+                            decimal salePrice = p.Price;         
+                            decimal discount = regularPrice - salePrice;
+                        }
+
+                        <span class="productPrice">
+                            <span class="regularPrice" style="text-decoration: line-through; color:#888;">
+                                Rs.@regularPrice.ToString("N2")
+                            </span>
+                            <span class="salePrice" style="font-weight:bold; margin-left:5px;">
+                                Rs.@salePrice.ToString("N2")
+                            </span>
+                            @if (discount > 0)
+                            {
+                                <span class="savePrice" style="color:green; margin-left:5px;">
+                                    Save Rs.@discount.ToString("N2")
+                                </span>
+                            }
+                        </span>
+                    </div>
+                    <div class="productActions">
+                        <button type="button"
+                                class="btn btnPrimary addToCartBtn"
+                                data-product-id="@p.Id"
+                                data-qty="1">
+                            Add to cart
+                        </button>
+                        <button type="button"
+                                class="btn btnGhost buyNowBtn"
+                                data-product-id="@p.Id"
+                                data-qty="1">
+                            Buy now
+                        </button>
+                        <a class="btn btnGhost" href="/Catalog/Details/@p.Id">Details</a>
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+
+    <div class="pagination">
+        @if (Model.Page > 1)
+        {
+            <a class="pageLink" href="#" data-page="@(@Model.Page - 1)" data-category-id="">Prev</a>
+        }
+        <span class="pageInfo">Page @Model.Page</span>
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a class="pageLink" href="#" data-page="@(@Model.Page + 1)" data-category-id="">Next</a>
+        }
+    </div>
+}
+

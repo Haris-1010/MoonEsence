@@ -1,0 +1,36 @@
+@model Ecommerce.Web.ViewModels.Account.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<section class="page">
+    <div class="container">
+        <h1 class="pageTitle">Create account</h1>
+
+        <form method="post" action="/Account/Register" class="form">
+            @Html.AntiForgeryToken()
+            <div class="formField">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" class="input" autocomplete="username" />
+                <span asp-validation-for="Username" class="fieldError"></span>
+            </div>
+
+            <div class="formField">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="input" autocomplete="email" />
+                <span asp-validation-for="Email" class="fieldError"></span>
+            </div>
+
+            <div class="formField">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="input" autocomplete="new-password" />
+                <span asp-validation-for="Password" class="fieldError"></span>
+            </div>
+
+            <button type="submit" class="btn btnPrimary">Create</button>
+
+            @Html.ValidationSummary(true, "", new { @class = "fieldError" })
+        </form>
+    </div>
+</section>
+

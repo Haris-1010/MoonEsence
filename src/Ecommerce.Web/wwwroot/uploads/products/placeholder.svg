@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22c55e" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#0b0f17" stop-opacity="1"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#g)"/>
+  <rect x="60" y="70" width="680" height="460" rx="24" ry="24" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)"/>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+        font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial"
+        font-size="36" fill="rgba(229,231,235,0.92)" font-weight="800">
+    Product image placeholder
+  </text>
+</svg>
+

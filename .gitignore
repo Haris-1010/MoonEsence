@@ -1,0 +1,18 @@
+# Visual Studio / IDE files
+.vs/
+*.user
+*.suo
+*.log
+
+# Node / packages
+node_modules/
+
+# Build outputs
+*.exe
+*.dll
+*.pdb
+bin/
+obj/
+
+# JetBrains IDEs
+.idea/

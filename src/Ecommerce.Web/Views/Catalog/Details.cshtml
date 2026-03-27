@@ -1,0 +1,60 @@
+@model Ecommerce.Web.ViewModels.ProductDetailViewModel
+@{
+    ViewData["Title"] = Model.Product.Name;
+}
+
+<section class="page">
+    <div class="container">
+        <a class="linkBack" href="/">Back to shop</a>
+
+        <div class="productDetail">
+            <div class="productDetailMedia">
+                <img src="@Model.Product.ImageUrl" alt="@Model.Product.Name" loading="lazy" />
+            </div>
+            <div class="productDetailInfo">
+                <h1 class="productDetailTitle">@Model.Product.Name</h1>
+
+                @* Pricing *@
+                @{
+                    decimal regularPrice = Model.Product.RegularPrice;
+                    decimal salePrice = Model.Product.Price;
+                    decimal discount = regularPrice - salePrice;
+                }
+                <div class="productDetailPrice">
+                    <span class="regularPrice" style="text-decoration: line-through; color:#888; font-size:0.9em;">
+                        Rs.@regularPrice.ToString("N2")
+                    </span>
+                    <span class="salePrice" style="font-weight:bold; margin-left:8px; font-size:1.2em;">
+                        Rs.@salePrice.ToString("N2")
+                    </span>
+                    @if (discount > 0)
+                    {
+                        <span class="savePrice" style="color:green; margin-left:8px;">
+                            Save Rs.@discount.ToString("N2")
+                        </span>
+                    }
+                </div>
+
+                <div class="productDetailCategory">Category: @Model.Product.CategoryName</div>
+                <div class="productDetailDescription">
+                    @Html.Raw(Model.Product.Description)
+                </div>
+
+                <div class="productDetailActions">
+                    <button type="button"
+                            class="btn btnPrimary addToCartBtn"
+                            data-product-id="@Model.Product.Id"
+                            data-qty="1">
+                        Add to cart
+                    </button>
+                    <button type="button"
+                            class="btn btnGhost buyNowBtn"
+                            data-product-id="@Model.Product.Id"
+                            data-qty="1">
+                        Buy now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

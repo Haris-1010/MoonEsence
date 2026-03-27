@@ -1,0 +1,73 @@
+@model Ecommerce.Web.ViewModels.OrderDetailViewModel
+@using Ecommerce.Domain.Enums
+@{
+    ViewData["Title"] = $"Admin order #{Model.Order.OrderId}";
+}
+
+<section class="page">
+    <div class="container">
+        <div class="pageHeader">
+            <h1 class="pageTitle">Order #@Model.Order.OrderId</h1>
+            <p class="pageSubtitle">Admin details + invoice print</p>
+        </div>
+
+        <div class="panel">
+            <div class="cartRow">
+                <span>Status</span>
+                <strong>@Model.Order.Status</strong>
+            </div>
+            <div class="cartRow">
+                <span>Payment</span>
+                <strong>COD</strong>
+            </div>
+            <div class="cartRow">
+                <span>Placed on</span>
+                <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd")</strong>
+            </div>
+            <div class="cartRow">
+                <span>Total</span>
+                <strong>$@Model.Order.TotalAmount.ToString("0.00")</strong>
+            </div>
+
+            <div class="panel" style="margin-top:12px;">
+                <h2 class="panelTitle" style="margin-bottom:10px;">Customer</h2>
+                <div class="cartRow"><span>Name</span><strong>@Model.Order.FullName</strong></div>
+                <div class="cartRow"><span>Phone</span><strong>@Model.Order.Phone</strong></div>
+                @if (!string.IsNullOrWhiteSpace(Model.Order.Email))
+                {
+                    <div class="cartRow"><span>Email</span><strong>@Model.Order.Email</strong></div>
+                }
+                <div class="cartRow" style="align-items:flex-start;">
+                    <span>Address</span>
+                    <strong style="text-align:right;max-width:62%;">
+                        @Model.Order.AddressLine1
+                        @if (!string.IsNullOrWhiteSpace(Model.Order.AddressLine2))
+                        { <text><br />@Model.Order.AddressLine2</text> }
+                        <br />
+                        @Model.Order.City - @Model.Order.ZipCode
+                    </strong>
+                </div>
+            </div>
+
+            <div class="invoiceActions noPrint" style="margin-top:12px;">
+                <a class="btn btnPrimary" href="/Orders/Invoice/@Model.Order.OrderId?code=@Model.Order.AccessCode">Print invoice</a>
+            </div>
+        </div>
+
+        <h2 class="panelTitle" style="margin-top:18px;">Items</h2>
+        <div class="cartItems" style="padding:0;gap:10px;">
+            @foreach (var item in Model.Order.Items)
+            {
+                <div class="cartItem" style="grid-template-columns:72px 1fr;">
+                    <img src="@item.ImageUrl" alt="@item.ProductName" />
+                    <div>
+                        <p class="cartItemTitle">@item.ProductName</p>
+                        <div class="cartItemMeta">@item.Quantity x $@item.UnitPrice.ToString("0.00")</div>
+                        <div class="cartItemMeta" style="margin-top:6px;color:var(--text);font-weight:800;">$@item.LineTotal.ToString("0.00")</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
