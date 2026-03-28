@@ -1,0 +1,15 @@
+C:\Development\eCommerceClean\src\Ecommerce.Application\bin\Release\net8.0\Ecommerce.Application.deps.json
+C:\Development\eCommerceClean\src\Ecommerce.Application\bin\Release\net8.0\Ecommerce.Application.dll
+C:\Development\eCommerceClean\src\Ecommerce.Application\bin\Release\net8.0\Ecommerce.Application.pdb
+C:\Development\eCommerceClean\src\Ecommerce.Application\bin\Release\net8.0\Ecommerce.Domain.dll
+C:\Development\eCommerceClean\src\Ecommerce.Application\bin\Release\net8.0\Ecommerce.Domain.pdb
+C:\Development\eCommerceClean\src\Ecommerce.Application\obj\Release\net8.0\Ecommerce.Application.csproj.AssemblyReference.cache
+C:\Development\eCommerceClean\src\Ecommerce.Application\obj\Release\net8.0\Ecommerce.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Development\eCommerceClean\src\Ecommerce.Application\obj\Release\net8.0\Ecommerce.Application.AssemblyInfoInputs.cache
+C:\Development\eCommerceClean\src\Ecommerce.Application\obj\Release\net8.0\Ecommerce.Application.AssemblyInfo.cs
+C:\Development\eCommerceClean\src\Ecommerce.Application\obj\Release\net8.0\Ecommerce.Application.csproj.CoreCompileInputs.cache
+C:\Development\eCommerceClean\src\Ecommerce.Application\obj\Release\net8.0\Ecommerc.C5F54E74.Up2Date
+C:\Development\eCommerceClean\src\Ecommerce.Application\obj\Release\net8.0\Ecommerce.Application.dll
+C:\Development\eCommerceClean\src\Ecommerce.Application\obj\Release\net8.0\refint\Ecommerce.Application.dll
+C:\Development\eCommerceClean\src\Ecommerce.Application\obj\Release\net8.0\Ecommerce.Application.pdb
+C:\Development\eCommerceClean\src\Ecommerce.Application\obj\Release\net8.0\ref\Ecommerce.Application.dll

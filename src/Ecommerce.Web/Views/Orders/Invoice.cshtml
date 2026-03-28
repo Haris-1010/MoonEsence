@@ -1,0 +1,86 @@
+@model Ecommerce.Web.ViewModels.OrderDetailViewModel
+@{
+    ViewData["Title"] = $"Invoice #{Model.Order.OrderId}";
+}
+
+<section class="page">
+    <div class="container">
+        <div class="pageHeader">
+            <h1 class="pageTitle">Invoice #@Model.Order.OrderId</h1>
+            <p class="pageSubtitle">Print-ready COD invoice</p>
+        </div>
+
+        <div class="panel invoicePanel">
+            <div class="invoiceMeta">
+                <div>
+                    <div class="muted">Order date</div>
+                    <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd")</strong>
+                </div>
+                <div>
+                    <div class="muted">Payment</div>
+                    <strong>COD</strong>
+                </div>
+                <div>
+                    <div class="muted">Status</div>
+                    <strong>@Model.Order.Status</strong>
+                </div>
+            </div>
+
+            <div class="invoiceCustomer">
+                <div class="muted">Customer</div>
+                <strong>@Model.Order.FullName</strong>
+                <div class="muted">Phone: @Model.Order.Phone</div>
+                @if (!string.IsNullOrWhiteSpace(Model.Order.Email))
+                {
+                    <div class="muted">Email: @Model.Order.Email</div>
+                }
+                <div class="muted" style="margin-top:8px;">
+                    Address: @Model.Order.AddressLine1
+                    @if (!string.IsNullOrWhiteSpace(Model.Order.AddressLine2))
+                    { <text>, @Model.Order.AddressLine2</text> }
+                    <br />
+                    @Model.Order.City - @Model.Order.ZipCode
+                </div>
+            </div>
+
+            <div class="invoiceTable">
+                <div class="invoiceRow invoiceHeader">
+                    <div>Item</div>
+                    <div class="right">Qty</div>
+                    <div class="right">Price</div>
+                    <div class="right">Total</div>
+                </div>
+
+                @foreach (var item in Model.Order.Items)
+                {
+                    <div class="invoiceRow">
+                        <div class="invoiceItem">
+                            @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="@item.ProductName" class="invoiceThumb" loading="lazy" />
+                            }
+                            <div>
+                                <strong>@item.ProductName</strong>
+                            </div>
+                        </div>
+                        <div class="right">@item.Quantity</div>
+                        <div class="right">RS: @item.UnitPrice.ToString("0.00")</div>
+                        <div class="right">RS: @item.LineTotal.ToString("0.00")</div>
+                    </div>
+                }
+            </div>
+
+            <div class="invoiceTotals">
+                <div class="invoiceRow">
+                    <div class="muted">Subtotal</div>
+                    <div><strong>RS:@Model.Order.TotalAmount.ToString("0.00")</strong></div>
+                </div>
+            </div>
+
+            <div class="invoiceActions noPrint">
+                <button type="button" class="btn btnPrimary" onclick="window.print()">Print</button>
+            </div>
+        </div>
+    </div>
+</section>
+

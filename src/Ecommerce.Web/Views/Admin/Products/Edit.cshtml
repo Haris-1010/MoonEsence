@@ -1,0 +1,122 @@
+@model Ecommerce.Web.ViewModels.AdminProductFormViewModel
+@{
+    var isEdit = Model.ProductId.HasValue;
+    ViewData["Title"] = isEdit ? "Edit product" : "Create product";
+}
+
+<section class="page">
+    <div class="container">
+        <h1 class="pageTitle">@ViewData["Title"]</h1>
+
+        <form method="post"
+              enctype="multipart/form-data"
+              action="@(isEdit ? $"/Admin/Products/Edit/{Model.ProductId}" : "/Admin/Products/Create")"
+              class="form">
+            @Html.AntiForgeryToken()
+
+            @if (!isEdit)
+            {
+                <div class="formField">
+                    <label asp-for="Create.Name"></label>
+                    <input asp-for="Create.Name" class="input" />
+                    <span asp-validation-for="Create.Name" class="fieldError"></span>
+                </div>
+                <div class="formField">
+                    <label asp-for="Create.Description"></label>
+                    <textarea asp-for="Create.Description" class="input"></textarea>
+                    <span asp-validation-for="Create.Description" class="fieldError"></span>
+                </div>
+
+                <div class="formField">
+                    <label asp-for="Create.RegularPrice">Regular Price</label>
+                    <input asp-for="Create.RegularPrice" class="input" />
+                    <span asp-validation-for="Create.RegularPrice" class="fieldError"></span>
+                </div>
+                <div class="formField">
+                    <label asp-for="Create.Price"></label>
+                    <input asp-for="Create.Price" class="input" />
+                    <span asp-validation-for="Create.Price" class="fieldError"></span>
+                </div>
+                <div class="formField">
+                    <label asp-for="Create.SubCategoryId">Sub category</label>
+                    <select asp-for="Create.SubCategoryId" class="input">
+                        <option value="">Select</option>
+                        @foreach (var sc in Model.SubCategories)
+                        {
+                            <option value="@sc.Id">@sc.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Create.SubCategoryId" class="fieldError"></span>
+                </div>
+                <div class="formField">
+                    <label>Image</label>
+                    <input type="file" name="imageFile" class="input" accept="image/*" />
+                </div>
+                <div class="formRow">
+                    <label>
+                        <input type="checkbox" asp-for="Create.IsActive" />
+                        <span>Active</span>
+                    </label>
+                </div>
+            }
+            else
+            {
+                <div class="formField">
+                    <label asp-for="Update.Name"></label>
+                    <input asp-for="Update.Name" class="input" />
+                </div>
+                <div class="formField">
+                    <label asp-for="Update.Description"></label>
+                    <textarea asp-for="Update.Description" class="input"></textarea>
+                </div>
+
+                <div class="formField"> 
+                     
+                    <label asp-for="Update.RegularPrice"></label>
+                    <input asp-for="Update.RegularPrice" class="input" />
+                </div>
+                <div class="formField">
+                    <label asp-for="Update.Price"></label>
+                    <input asp-for="Update.Price" class="input" />
+                </div>
+                <div class="formField">
+                    <label asp-for="Update.SubCategoryId">Sub category</label>
+                    <select asp-for="Update.SubCategoryId" class="input">
+                        <option value="">Select</option>
+                        @foreach (var sc in Model.SubCategories)
+                        {
+                            if (Model.Update.SubCategoryId == sc.Id)
+                            {
+                                <option value="@sc.Id" selected="selected">@sc.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@sc.Id">@sc.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="formField">
+                    <label>Image</label>
+                    @if (!string.IsNullOrWhiteSpace(Model.ExistingImageUrl))
+                    {
+                        <div class="muted" style="margin:8px 0;">Existing:</div>
+                        <img src="@Model.ExistingImageUrl" alt="Current image" style="width:100%;max-width:220px;border-radius:12px;border:1px solid rgba(255,255,255,.12)" />
+                    }
+                    <input type="file" name="imageFile" class="input" accept="image/*" />
+                </div>
+                <div class="formRow">
+                    <label>
+                        <input type="checkbox" asp-for="Update.IsActive" />
+                        <span>Active</span>
+                    </label>
+                </div>
+            }
+
+            <button type="submit" class="btn btnPrimary" style="margin-top:12px;">
+                @(isEdit ? "Save changes" : "Create product")
+            </button>
+        </form>
+    </div>
+</section>
+

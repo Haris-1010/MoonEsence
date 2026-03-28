@@ -1,0 +1,165 @@
+@model Ecommerce.Web.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+
+    var deliveryCharges = 0;
+    var finalTotal = Model.Cart.Subtotal + deliveryCharges;
+}
+
+<style>
+    .formGrid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .fullWidth {
+        grid-column: span 2;
+    }
+
+    @@media (max-width: 768px) {
+        .formGrid
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    .fullWidth {
+        grid-column: span 1;
+    }
+
+    }
+</style>
+
+<section class="page">
+    <div class="container">
+        <h1 class="pageTitle">Checkout</h1>
+
+        <!-- CART ITEMS -->
+        <div class="panel">
+            <h2 class="panelTitle">Your items</h2>
+
+            @if (Model.Cart.Lines.Count == 0)
+            {
+                <div class="emptyState">Your cart is empty.</div>
+            }
+            else
+            {
+                <div class="cartItems" style="padding:0;gap:10px;">
+                    @foreach (var line in Model.Cart.Lines)
+                    {
+                        <div class="cartItem" style="grid-template-columns:64px 1fr;"> 
+                            <a href="/Catalog/Details/@line.ProductId">
+                                <img src="@line.ImageUrl" alt="@line.ProductName" style="cursor:pointer;" />
+                            </a>
+                            <div style="display: flex;justify-content: space-between;align-items: center;width:100%">
+                                <div><p class="cartItemTitle">@line.ProductName</p></div>
+                                <div class="cartItemMeta">@line.Quantity x @line.UnitPrice</div>
+                                <div class="cartItemMeta" style="margin-top:6px;color:var(--text);font-weight:800;">
+                                    RS: @line.LineTotal
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- TOTALS -->
+                <div class="cartTotals" style="margin-top:12px;">
+                    <div class="cartRow">
+                        <span>Items Total</span>
+                        <strong>RS: @Model.Cart.Subtotal.ToString("0.00")</strong>
+                    </div>
+
+                    <div class="cartRow">
+                        <span>Delivery Charges</span>
+                        <strong>RS: @deliveryCharges</strong>
+                    </div>
+
+                    <div class="cartRow">
+                        <span><b>Total (Including Delivery)</b></span>
+                        <strong>RS: @finalTotal.ToString("0.00")</strong>
+                    </div>
+
+                    <div class="cartRow">
+                        <span>Total items</span>
+                        <strong>@Model.Cart.TotalItems</strong>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- CHECKOUT FORM -->
+        <form method="post" action="/Checkout" class="form">
+            @Html.AntiForgeryToken()
+
+            <h2 class="panelTitle" style="margin-top:16px;">Delivery details</h2>
+
+            <div class="formGrid">
+
+                <div class="formField">
+                    <label asp-for="Checkout.FullName"></label>
+                    <input asp-for="Checkout.FullName" class="input" />
+                    <span asp-validation-for="Checkout.FullName" class="fieldError"></span>
+                </div>
+
+                <div class="formField">
+                    <label asp-for="Checkout.Phone"></label>
+                    <input asp-for="Checkout.Phone" class="input" />
+                    <span asp-validation-for="Checkout.Phone" class="fieldError"></span>
+                </div>
+
+                <div class="formField">
+                    <label asp-for="Checkout.Email"></label>
+                    <input asp-for="Checkout.Email" class="input" />
+                    <span asp-validation-for="Checkout.Email" class="fieldError"></span>
+                </div>
+
+                <div class="formField">
+                    <label asp-for="Checkout.City"></label>
+                    <input asp-for="Checkout.City" class="input" list="citiesList" />
+                    <datalist id="citiesList">
+                        <option value="Karachi"></option>
+                        <option value="Lahore"></option>
+                        <option value="Islamabad"></option>
+                        <option value="Rawalpindi"></option>
+                        <option value="Faisalabad"></option>
+                        <option value="Multan"></option>
+                    </datalist>
+                    <span asp-validation-for="Checkout.City" class="fieldError"></span>
+                </div>
+
+                <div class="formField fullWidth">
+                    <label asp-for="Checkout.AddressLine1">Address</label>
+                    <input asp-for="Checkout.AddressLine1" class="input" />
+                    <span asp-validation-for="Checkout.AddressLine1" class="fieldError"></span>
+                </div>
+
+                <div class="formField fullWidth">
+                    <label asp-for="Checkout.AddressLine2">Address line 2 (optional)</label>
+                    <input asp-for="Checkout.AddressLine2" class="input"
+                           placeholder="Apartment, flat, house no, etc." />
+                    <span asp-validation-for="Checkout.AddressLine2" class="fieldError"></span>
+                </div>
+
+                <div class="formField">
+                    <label asp-for="Checkout.ZipCode">Postal Code</label>
+                    <input asp-for="Checkout.ZipCode" class="input" />
+                    <span asp-validation-for="Checkout.ZipCode" class="fieldError"></span>
+                </div>
+
+            </div>
+
+            <!-- PAYMENT -->
+            <div class="panel" style="margin-top:10px;">
+                <div class="cartRow" style="margin:0;">
+                    <span>Payment</span>
+                    <strong>COD (Cash on Delivery)</strong>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btnPrimary" style="margin-top:14px;">
+                Complete order
+            </button>
+        </form>
+    </div>
+</section>

@@ -1,0 +1,40 @@
+@model Ecommerce.Web.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin dashboard";
+}
+
+<section class="page">
+    <div class="container">
+        <div class="pageHeader">
+            <h1 class="pageTitle">Admin dashboard</h1>
+            <p class="pageSubtitle">Real-time order notifications</p>
+        </div>
+
+        <div class="adminStats">
+            <div class="statCard">
+                <div class="statValue">@Model.Stats.TotalProducts</div>
+                <div class="statLabel">Products</div>
+            </div>
+            <div class="statCard">
+                <div class="statValue">@Model.Stats.TotalCategories</div>
+                <div class="statLabel">Categories</div>
+            </div>
+            <div class="statCard">
+                <div class="statValue">@Model.Stats.TotalOrders</div>
+                <div class="statLabel">Orders</div>
+            </div>
+            <div class="statCard">
+                <div class="statValue">@Model.Stats.NewOrdersToday</div>
+                <div class="statLabel">New today</div>
+            </div>
+        </div>
+
+        <div class="panel" style="margin-top:14px;">
+            <h2 class="panelTitle">New orders</h2>
+            <div id="newOrders" class="newOrdersList">
+                <div class="muted" style="padding:8px 0;color:rgba(229,231,235,.7)">Waiting for new orders...</div>
+            </div>
+        </div>
+    </div>
+</section>
+

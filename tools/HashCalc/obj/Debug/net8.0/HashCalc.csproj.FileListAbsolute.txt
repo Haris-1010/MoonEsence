@@ -1,0 +1,14 @@
+C:\Development\eCommerceClean\tools\HashCalc\bin\Debug\net8.0\HashCalc.exe
+C:\Development\eCommerceClean\tools\HashCalc\bin\Debug\net8.0\HashCalc.deps.json
+C:\Development\eCommerceClean\tools\HashCalc\bin\Debug\net8.0\HashCalc.runtimeconfig.json
+C:\Development\eCommerceClean\tools\HashCalc\bin\Debug\net8.0\HashCalc.dll
+C:\Development\eCommerceClean\tools\HashCalc\bin\Debug\net8.0\HashCalc.pdb
+C:\Development\eCommerceClean\tools\HashCalc\obj\Debug\net8.0\HashCalc.GeneratedMSBuildEditorConfig.editorconfig
+C:\Development\eCommerceClean\tools\HashCalc\obj\Debug\net8.0\HashCalc.AssemblyInfoInputs.cache
+C:\Development\eCommerceClean\tools\HashCalc\obj\Debug\net8.0\HashCalc.AssemblyInfo.cs
+C:\Development\eCommerceClean\tools\HashCalc\obj\Debug\net8.0\HashCalc.csproj.CoreCompileInputs.cache
+C:\Development\eCommerceClean\tools\HashCalc\obj\Debug\net8.0\HashCalc.dll
+C:\Development\eCommerceClean\tools\HashCalc\obj\Debug\net8.0\refint\HashCalc.dll
+C:\Development\eCommerceClean\tools\HashCalc\obj\Debug\net8.0\HashCalc.pdb
+C:\Development\eCommerceClean\tools\HashCalc\obj\Debug\net8.0\HashCalc.genruntimeconfig.cache
+C:\Development\eCommerceClean\tools\HashCalc\obj\Debug\net8.0\ref\HashCalc.dll

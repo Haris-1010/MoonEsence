@@ -1,0 +1,795 @@
+﻿/* Homepage Banners */
+.promoBanners {
+    margin: 3rem 0;
+}
+
+.bannerGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.bannerCard {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+    .bannerCard:hover {
+        transform: translateY(-5px);
+    }
+
+.bannerImage {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.bannerOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    padding: 1.5rem;
+    color: white;
+}
+
+    .bannerOverlay h3 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .bannerOverlay p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+    }
+
+.bannerBtn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: white;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+}
+
+    .bannerBtn:hover {
+        background: #f0f0f0;
+    }
+
+/* Category Banners */
+.categoryBanners {
+    margin: 4rem 0;
+}
+
+.categoryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.categoryItem {
+    text-align: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+    .categoryItem:hover {
+        transform: translateY(-5px);
+    }
+
+.categoryIcon {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+    .categoryIcon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.categoryItem h3 {
+    color: #333;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Featured Products Banner */
+.featuredBanner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 4rem 2rem;
+    border-radius: 8px;
+    text-align: center;
+    color: white;
+    margin: 3rem 0;
+}
+
+    .featuredBanner h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .featuredBanner p {
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+    }
+
+    .featuredBanner .btn {
+        background: white;
+        color: #667eea;
+    }
+
+        .featuredBanner .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+/* Footer Styles - Complete Responsive Design */
+.footer {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #ffffff;
+    padding: 4rem 0 0;
+    margin-top: auto;
+    position: relative;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+}
+
+    /* Decorative top border */
+    .footer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #ffd700, #ff6b6b, #4ecdc4, #ffd700);
+        background-size: 300% 100%;
+        animation: gradientShift 3s ease infinite;
+    }
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.footerContainer {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Footer Grid - Responsive Layout */
+.footerGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Footer Sections */
+.footerSection {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.footerTitle {
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+    color: #ffd700;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    position: relative;
+    display: inline-block;
+}
+
+    .footerTitle::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 40px;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ff6b6b);
+        border-radius: 2px;
+    }
+
+.footerSubtitle {
+    font-size: 1.2rem;
+    margin-bottom: 1.25rem;
+    color: #ffd700;
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+}
+
+    .footerSubtitle::after {
+        content: '';
+        position: absolute;
+        bottom: -6px;
+        left: 0;
+        width: 35px;
+        height: 2px;
+        background: linear-gradient(90deg, #ffd700, #ff6b6b);
+        border-radius: 2px;
+    }
+
+.footerDesc {
+    color: #e0e0e0;
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+/* Social Links */
+.socialLinks {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.socialLink {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: white;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+    .socialLink::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 215, 0, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.4s, height 0.4s;
+    }
+
+    .socialLink:hover::before {
+        width: 100%;
+        height: 100%;
+    }
+
+    .socialLink:hover {
+        transform: translateY(-5px) rotate(8deg);
+        background: #ffd700;
+        color: #1a1a2e;
+    }
+
+    .socialLink svg {
+        width: 20px;
+        height: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+/* Footer Links */
+.footerLinks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .footerLinks li {
+        margin-bottom: 0.75rem;
+    }
+
+    .footerLinks a {
+        color: #e0e0e0;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        position: relative;
+        padding-left: 0;
+        font-size: 0.95rem;
+    }
+
+        .footerLinks a::before {
+            content: '→';
+            position: absolute;
+            left: -20px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            color: #ffd700;
+        }
+
+        .footerLinks a:hover {
+            color: #ffd700;
+            transform: translateX(5px);
+            padding-left: 20px;
+        }
+
+            .footerLinks a:hover::before {
+                opacity: 1;
+                left: 0;
+            }
+
+/* Contact Info */
+.contactInfo {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .contactInfo li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        color: #e0e0e0;
+        font-size: 0.95rem;
+        transition: transform 0.3s ease;
+    }
+
+        .contactInfo li:hover {
+            transform: translateX(5px);
+        }
+
+    .contactInfo svg {
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+        color: #ffd700;
+        transition: transform 0.3s ease;
+    }
+
+    .contactInfo li:hover svg {
+        transform: scale(1.1);
+    }
+
+    .contactInfo span {
+        line-height: 1.5;
+    }
+
+/* Footer Bottom */
+.footerBottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: #b0b0b0;
+}
+
+    .footerBottom p {
+        margin: 0;
+    }
+
+/* Payment Methods */
+.paymentMethods {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+    .paymentMethods span {
+        padding: 0.4rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: default;
+        backdrop-filter: blur(5px);
+    }
+
+        .paymentMethods span:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateY(-2px);
+            color: #ffd700;
+        }
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Laptop and Desktop (1024px - 1400px) */
+@media (min-width: 1025px) and (max-width: 1400px) {
+    .footerContainer {
+        max-width: 1200px;
+        padding: 0 1.5rem;
+    }
+
+    .footerGrid {
+        gap: 2rem;
+    }
+
+    .footerTitle {
+        font-size: 1.5rem;
+    }
+
+    .footerSubtitle {
+        font-size: 1.1rem;
+    }
+}
+
+/* Tablet Landscape (768px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .footer {
+        padding: 3rem 0 0;
+    }
+
+    .footerContainer {
+        padding: 0 1.5rem;
+    }
+
+    .footerGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .footerTitle {
+        font-size: 1.4rem;
+    }
+
+    .footerSubtitle {
+        font-size: 1.1rem;
+    }
+
+    .socialLinks {
+        justify-content: flex-start;
+    }
+
+    .footerBottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+        padding: 1.5rem 0;
+    }
+
+    .paymentMethods {
+        justify-content: center;
+    }
+}
+
+/* Tablet Portrait (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .footer {
+        padding: 2.5rem 0 0;
+    }
+
+    .footerContainer {
+        padding: 0 1.25rem;
+    }
+
+    .footerGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.75rem;
+        margin-bottom: 2rem;
+    }
+
+    .footerTitle {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .footerSubtitle {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .footerDesc {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .socialLink {
+        width: 36px;
+        height: 36px;
+    }
+
+        .socialLink svg {
+            width: 18px;
+            height: 18px;
+        }
+
+    .footerLinks a,
+    .contactInfo li {
+        font-size: 0.9rem;
+    }
+
+    .contactInfo li {
+        gap: 0.6rem;
+    }
+
+    .contactInfo svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .footerBottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+        padding: 1.25rem 0;
+        font-size: 0.85rem;
+    }
+
+    .paymentMethods span {
+        padding: 0.35rem 0.9rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Mobile (320px - 480px) */
+@media (max-width: 480px) {
+    .footer {
+        padding: 2rem 0 0;
+    }
+
+    .footerContainer {
+        padding: 0 1rem;
+    }
+
+    .footerGrid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .footerSection {
+        text-align: center;
+    }
+
+    .footerTitle {
+        font-size: 1.2rem;
+        margin-bottom: 0.75rem;
+    }
+
+        .footerTitle::after {
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+        }
+
+    .footerSubtitle {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+        .footerSubtitle::after {
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+        }
+
+    .footerDesc {
+        font-size: 0.85rem;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .socialLinks {
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .socialLink {
+        width: 32px;
+        height: 32px;
+    }
+
+        .socialLink svg {
+            width: 16px;
+            height: 16px;
+        }
+
+    .footerLinks {
+        text-align: center;
+    }
+
+        .footerLinks a {
+            font-size: 0.85rem;
+        }
+
+            .footerLinks a::before {
+                display: none;
+            }
+
+            .footerLinks a:hover {
+                transform: translateX(0);
+                padding-left: 0;
+                color: #ffd700;
+            }
+
+    .contactInfo {
+        text-align: center;
+    }
+
+        .contactInfo li {
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+            .contactInfo li:hover {
+                transform: translateX(0);
+            }
+
+        .contactInfo svg {
+            width: 14px;
+            height: 14px;
+        }
+
+    .footerBottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+        padding: 1rem 0;
+        font-size: 0.75rem;
+    }
+
+    .paymentMethods {
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+        .paymentMethods span {
+            padding: 0.25rem 0.7rem;
+            font-size: 0.7rem;
+        }
+}
+
+/* Small Mobile (up to 360px) */
+@media (max-width: 360px) {
+    .footerContainer {
+        padding: 0 0.75rem;
+    }
+
+    .footerTitle {
+        font-size: 1.1rem;
+    }
+
+    .footerSubtitle {
+        font-size: 0.95rem;
+    }
+
+    .footerDesc {
+        font-size: 0.8rem;
+    }
+
+    .footerLinks a,
+    .contactInfo li {
+        font-size: 0.8rem;
+    }
+
+    .paymentMethods span {
+        padding: 0.2rem 0.6rem;
+        font-size: 0.65rem;
+    }
+}
+
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+    .footerContainer {
+        max-width: 1400px;
+        padding: 0 2rem;
+    }
+
+    .footerGrid {
+        gap: 3rem;
+    }
+
+    .footerTitle {
+        font-size: 2rem;
+    }
+
+    .footerSubtitle {
+        font-size: 1.3rem;
+    }
+
+    .footerDesc,
+    .footerLinks a,
+    .contactInfo li {
+        font-size: 1rem;
+    }
+
+    .socialLink {
+        width: 44px;
+        height: 44px;
+    }
+
+        .socialLink svg {
+            width: 22px;
+            height: 22px;
+        }
+}
+
+/* Hover Effects for Desktop */
+@media (hover: hover) {
+    .paymentMethods span {
+        cursor: default;
+    }
+
+    .footerLinks a:hover {
+        transform: translateX(5px);
+    }
+
+    .contactInfo li:hover {
+        transform: translateX(5px);
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) {
+    .footerLinks a:hover {
+        transform: none;
+    }
+
+    .contactInfo li:hover {
+        transform: none;
+    }
+
+    .socialLink:hover {
+        transform: none;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .footer {
+        background: #f0f0f0;
+        color: #000;
+        padding: 2rem 0;
+    }
+
+        .footer::before {
+            display: none;
+        }
+
+    .footerTitle,
+    .footerSubtitle {
+        color: #000;
+    }
+
+    .socialLink,
+    .paymentMethods {
+        display: none;
+    }
+}

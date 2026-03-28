@@ -1,0 +1,45 @@
+@model Ecommerce.Web.ViewModels.AdminSubCategoriesIndexViewModel
+@{
+    ViewData["Title"] = "Manage subcategories";
+}
+
+<section class="page">
+    <div class="container">
+        <div class="pageHeader">
+            <h1 class="pageTitle">SubCategories</h1>
+            <p class="pageSubtitle">Admin CRUD</p>
+        </div>
+
+        <a class="btn btnPrimary" href="/Admin/SubCategories/Create" style="margin-top:10px;">+ Add subcategory</a>
+
+        @if (Model.SubCategories.Count == 0)
+        {
+            <div class="emptyState" style="padding:12px;margin-top:14px;color:rgba(229,231,235,.8)">No subcategories.</div>
+        }
+        else
+        {
+            <div class="ordersList" style="margin-top:14px;">
+                @foreach (var sc in Model.SubCategories)
+                {
+                    <div class="orderCard">
+                        <div class="orderCardRow">
+                            <strong>@sc.Name</strong>
+                            <span class="muted">CategoryId: @sc.CategoryId</span>
+                        </div>
+                        <div class="orderCardRow">
+                            <span class="muted">@sc.Description</span>
+                        </div>
+                        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+                            <a class="btn btnGhost" href="/Admin/SubCategories/Edit/@sc.Id">Edit</a>
+                            <form method="post" action="/Admin/SubCategories/Delete/@sc.Id" onsubmit="return confirm('Delete subcategory?')" style="margin:0;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btnGhost">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+

@@ -1,0 +1,40 @@
+@model Ecommerce.Web.ViewModels.Account.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<section class="page">
+    <div class="container">
+        <h1 class="pageTitle">Login</h1>
+
+        <form method="post" action="/Account/Login" class="form">
+            @Html.AntiForgeryToken()
+            <div class="formField">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" class="input" autocomplete="username" />
+                <span asp-validation-for="Username" class="fieldError"></span>
+            </div>
+
+            <div class="formField">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="input" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="fieldError"></span>
+            </div>
+
+            <div class="formRow">
+                <label class="checkbox">
+                    <input asp-for="RememberMe" />
+                    <span>Remember me</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btnPrimary">Sign in</button>
+            <div class="muted" style="margin-top:12px;">
+                New here? <a href="/Account/Register">Create an account</a>
+            </div>
+
+            @Html.ValidationSummary(true, "", new { @class = "fieldError" })
+        </form>
+    </div>
+</section>
+

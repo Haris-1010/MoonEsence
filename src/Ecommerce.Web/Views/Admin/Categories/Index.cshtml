@@ -1,0 +1,41 @@
+@model Ecommerce.Web.ViewModels.AdminCategoriesIndexViewModel
+@{
+    ViewData["Title"] = "Manage categories";
+}
+
+<section class="page">
+    <div class="container">
+        <h1 class="pageTitle">Categories</h1>
+        <a class="btn btnPrimary" href="/Admin/Categories/Create" style="margin-top:10px;">+ Add category</a>
+
+        @if (Model.Categories.Count == 0)
+        {
+            <div class="emptyState" style="padding:12px;color:rgba(229,231,235,.8)">No categories.</div>
+        }
+        else
+        {
+            <div class="ordersList" style="margin-top:14px;">
+                @foreach (var c in Model.Categories)
+                {
+                    <div class="orderCard">
+                        <div class="orderCardRow">
+                            <strong>@c.Name</strong>
+                            <span class="muted">@(c.IsActive ? "Active" : "Inactive")</span>
+                        </div>
+                        <div class="orderCardRow">
+                            <span class="muted">@c.Description</span>
+                        </div>
+                        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+                            <a class="btn btnGhost" href="/Admin/Categories/Edit/@c.Id">Edit</a>
+                            <form method="post" action="/Admin/Categories/Delete/@c.Id" onsubmit="return confirm('Delete category?')" style="margin:0;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btnGhost">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+

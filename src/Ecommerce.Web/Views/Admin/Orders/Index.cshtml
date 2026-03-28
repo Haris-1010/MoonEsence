@@ -1,0 +1,348 @@
+﻿@model Ecommerce.Web.ViewModels.AdminOrdersIndexViewModel
+@using Ecommerce.Domain.Enums
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<section class="page">
+    <div class="container">
+        <div class="pageHeader">
+            <h1 class="pageTitle">Orders</h1>
+            <p class="pageSubtitle">Update status</p>
+        </div>
+
+        <form method="get" action="/Admin/Orders" class="form filterForm" id="filterForm">
+            <div class="formField">
+                <label>Status</label>
+                <select name="status" class="input" style="background-color: #0B0F17; color: white;">
+                    <option value="">All</option>
+                    @foreach (var s in Enum.GetValues<OrderStatus>())
+                    {
+                        if (Model.Status == s)
+                        {
+                            <option value="@((int)s)" selected="selected">@s</option>
+                        }
+                        else
+                        {
+                            <option value="@((int)s)">@s</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="formField">
+                <label>Quick Date Filter</label>
+                <select id="quickDateFilter" class="input" style="background-color: #0B0F17; color: white;">
+                    <option value="">Select period</option>
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="thisWeek">This Week</option>
+                    <option value="lastWeek">Last Week</option>
+                    <option value="thisMonth">This Month</option>
+                    <option value="lastMonth">Last Month</option>
+                </select>
+            </div>
+
+            <div class="formField">
+                <label>From Date (UTC)</label>
+                <input type="date"
+                       name="fromUtc"
+                       class="input"
+                       style="background-color: #0B0F17; color: white;"
+                       value="@(Model.FromUtc.HasValue? Model.FromUtc.Value.ToString("yyyy-MM-dd") : "")" />
+            </div>
+
+            <div class="formField">
+                <label>To Date (UTC)</label>
+                <input type="date"
+                       name="toUtc"
+                       class="input"
+                       style="background-color: #0B0F17; color: white;"
+                       value="@(Model.ToUtc.HasValue? Model.ToUtc.Value.ToString("yyyy-MM-dd") : "")" />
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" class="btn btnPrimary">Filter</button>
+                <a href="/Admin/Orders" class="btn btnGhost">Clear</a>
+            </div>
+        </form>
+
+        @if (Model.FromUtc.HasValue || Model.ToUtc.HasValue || Model.Status != null)
+        {
+            <div class="activeFilters" style="margin-top: 12px; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 4px;">
+                <span style="color: rgba(229,231,235,.6);">Active filters:</span>
+                @if (Model.Status != null)
+                {
+                    <span class="filterTag">Status: @Model.Status</span>
+                }
+                @if (Model.FromUtc.HasValue)
+                {
+                    <span class="filterTag">From: @Model.FromUtc.Value.ToString("yyyy-MM-dd")</span>
+                }
+                @if (Model.ToUtc.HasValue)
+                {
+                    <span class="filterTag">To: @Model.ToUtc.Value.ToString("yyyy-MM-dd")</span>
+                }
+            </div>
+        }
+
+        @if (Model.Orders.Items.Count == 0)
+        {
+            <div class="emptyState" style="padding:12px;color:rgba(229,231,235,.8)">No orders.</div>
+        }
+        else
+        {
+            <div class="ordersList" style="margin-top:14px;">
+                @foreach (var o in Model.Orders.Items)
+                {
+                    <div class="orderCard">
+                        <div class="orderCardRow">
+                            <strong>Order #@o.OrderId</strong>
+                            <span class="muted">@o.CreatedAt.ToString("yyyy-MM-dd HH:mm") UTC</span>
+                        </div>
+                        <div class="orderCardRow">
+                            <span class="muted">Customer</span>
+                            <strong>@o.CustomerName</strong>
+                        </div>
+                        <div class="orderCardRow">
+                            <span class="muted">Phone</span>
+                            <strong>@o.CustomerPhone</strong>
+                        </div>
+                        <div class="orderCardRow">
+                            <span class="muted">Status</span>
+                            <strong style="color: @(o.Status == OrderStatus.Delivered ? "#10b981" :
+                                                                                 o.Status == OrderStatus.Cancelled ? "#ef4444" :
+                                                                                 o.Status == OrderStatus.Processing ? "#f59e0b" : "#6b7280")">
+                                                          @o.Status
+                         </strong>
+                </div>
+                <div class="orderCardRow">
+                    <span class="muted">Total</span>
+                    <strong>RS: @o.TotalAmount.ToString("0.00")</strong>
+                </div>
+
+                        <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
+                            <a class="btn btnGhost" href="/Admin/Orders/Details/@o.OrderId">Details</a>
+                        </div>
+
+                        <form method="post" action="/Admin/Orders/UpdateStatus" class="form" style="margin-top:12px;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="orderId" value="@o.OrderId" />
+                            <div class="formField" style="margin:0;">
+                                <select name="newStatus" class="input" style="background-color:  #0B0F17; color: white;">
+                            @foreach (var s in Enum.GetValues<OrderStatus>())
+                                    {
+                                        if (o.Status == s)
+                                        {
+                                            <option value="@((int)s)" selected="selected">@s</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@((int)s)">@s</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btnGhost" style="margin-top:10px;">Update</button>
+                        </form>
+                    </div>
+                }
+            </div>
+
+         @*    <!-- Pagination -->
+            @if (Model.Orders.TotalPages > 1)
+            {
+                <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                    @if (Model.Orders.PageNumber > 1)
+                    {
+                        <a href="?page=@(Model.Orders.PageNumber - 1)&status=@Model.Status&fromUtc=@Model.FromUtc&toUtc=@Model.ToUtc" class="btn btnGhost">Previous</a>
+                    }
+
+                    @for (int i = 1; i <= Model.Orders.TotalPages; i++)
+                    {
+                        if (i == Model.Orders.PageNumber)
+                        {
+                            <span class="btn btnPrimary" style="cursor: default;">@i</span>
+                        }
+                        else if (Math.Abs(i - Model.Orders.PageNumber) <= 2 || i == 1 || i == Model.Orders.TotalPages)
+                        {
+                            <a href="?page=@i&status=@Model.Status&fromUtc=@Model.FromUtc&toUtc=@Model.ToUtc" class="btn btnGhost">@i</a>
+                        }
+                        else if (Math.Abs(i - Model.Orders.PageNumber) == 3)
+                        {
+                            <span>...</span>
+                        }
+                    }
+
+                    @if (Model.Orders.PageNumber < Model.Orders.TotalPages)
+                    {
+                        <a href="?page=@(Model.Orders.PageNumber + 1)&status=@Model.Status&fromUtc=@Model.FromUtc&toUtc=@Model.ToUtc" class="btn btnGhost">Next</a>
+                    }
+                </div>
+            } *@
+        }
+    </div>
+</section>
+
+<script>
+    document.getElementById('quickDateFilter').addEventListener('change', function() {
+        const selected = this.value;
+        if (!selected) return;
+
+        const now = new Date();
+        let fromDate = null;
+        let toDate = null;
+
+        // Helper to get UTC date string (YYYY-MM-DD)
+        function getUTCDateString(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        // Helper to get start of day in UTC
+        function getUTCDate(date) {
+            return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        }
+
+        switch(selected) {
+            case 'today':
+                fromDate = getUTCDate(now);
+                toDate = getUTCDate(now);
+                break;
+
+            case 'yesterday':
+                const yesterday = new Date(now);
+                yesterday.setDate(now.getDate() - 1);
+                fromDate = getUTCDate(yesterday);
+                toDate = getUTCDate(yesterday);
+                break;
+
+            case 'thisWeek':
+                // Get Monday of current week
+                const currentDay = now.getDay();
+                const daysToMonday = currentDay === 0 ? 6 : currentDay - 1;
+                const monday = new Date(now);
+                monday.setDate(now.getDate() - daysToMonday);
+                fromDate = getUTCDate(monday);
+                toDate = getUTCDate(now);
+                break;
+
+            case 'lastWeek':
+                // Last week: Monday to Sunday
+                const today = new Date(now);
+                const currentDayNum = today.getDay();
+                const daysToLastMonday = (currentDayNum === 0 ? 6 : currentDayNum - 1) + 7;
+                const lastMonday = new Date(today);
+                lastMonday.setDate(today.getDate() - daysToLastMonday);
+                const lastSunday = new Date(lastMonday);
+                lastSunday.setDate(lastMonday.getDate() + 6);
+                fromDate = getUTCDate(lastMonday);
+                toDate = getUTCDate(lastSunday);
+                break;
+
+            case 'thisMonth':
+                fromDate = getUTCDate(new Date(now.getFullYear(), now.getMonth(), 1));
+                toDate = getUTCDate(now);
+                break;
+
+            case 'lastMonth':
+                const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+                fromDate = getUTCDate(lastMonth);
+                toDate = getUTCDate(lastMonthEnd);
+                break;
+        }
+
+        if (fromDate && toDate) {
+            // Set the date inputs
+            const fromInput = document.querySelector('input[name="fromUtc"]');
+            const toInput = document.querySelector('input[name="toUtc"]');
+
+            fromInput.value = getUTCDateString(fromDate);
+            toInput.value = getUTCDateString(toDate);
+
+            // Auto-submit the form
+            document.getElementById('filterForm').submit();
+        }
+    });
+
+    // Optional: Show current filter values
+    const fromDateInput = document.querySelector('input[name="fromUtc"]');
+    const toDateInput = document.querySelector('input[name="toUtc"]');
+
+    if (fromDateInput.value || toDateInput.value) {
+        // If dates are already set, you could highlight the quick filter if it matches
+        // This is optional and can be implemented if needed
+    }
+</script>
+
+<style>
+    .filterForm {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: flex-end;
+    }
+
+        .filterForm .formField {
+            flex: 1;
+            min-width: 150px;
+        }
+
+    @@media (max-width: 768px) {
+        .filterForm .formField
+
+    {
+        min-width: 100%;
+    }
+
+    .filterForm > div:last-child {
+        width: 100%;
+    }
+
+    .filterForm button,
+    .filterForm a {
+        flex: 1;
+    }
+
+    }
+
+    .orderCard {
+        background: #1F2937;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        border: 1px solid #374151;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .orderCard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+    .orderCardRow {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .muted {
+        color: rgba(229,231,235,.6);
+        font-size: 0.9em;
+    }
+
+    .filterTag {
+        display: inline-block;
+        background: rgba(59, 130, 246, 0.2);
+        padding: 4px 8px;
+        border-radius: 4px;
+        margin-left: 8px;
+        font-size: 12px;
+        color: #60A5FA;
+    }
+
+    .pagination .btn {
+        min-width: 40px;
+        text-align: center;
+    }
+</style>

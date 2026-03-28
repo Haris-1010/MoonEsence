@@ -1,0 +1,55 @@
+@model Ecommerce.Web.ViewModels.AdminSubCategoryFormViewModel
+@{
+    var isEdit = Model.SubCategoryId.HasValue;
+    ViewData["Title"] = isEdit ? "Edit subcategory" : "Create subcategory";
+    var action = isEdit ? $"/Admin/SubCategories/Edit/{Model.SubCategoryId}" : "/Admin/SubCategories/Create";
+}
+
+<section class="page">
+    <div class="container">
+        <h1 class="pageTitle">@ViewData["Title"]</h1>
+
+        <form method="post" action="@action" class="form">
+            @Html.AntiForgeryToken()
+
+            <div class="formField">
+                <label>Category</label>
+                <select name="SubCategory.CategoryId" class="input" style="background-color: #0B0F17; color: white;" >
+                    @foreach (var c in Model.Categories)
+                    {
+                        if (Model.SubCategory.CategoryId == c.Id)
+                        {
+                            <option value="@c.Id" selected="selected">@c.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@c.Id">@c.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="formField">
+                <label>Name</label>
+                <input name="SubCategory.Name" value="@Model.SubCategory.Name" class="input" />
+            </div>
+
+            <div class="formField">
+                <label>Description</label>
+                <textarea name="SubCategory.Description" class="input">@Model.SubCategory.Description</textarea>
+            </div>
+
+            <div class="formRow">
+                <label>
+                    <input type="checkbox" name="SubCategory.IsActive" value="true" @(Model.SubCategory.IsActive ? "checked" : "") />
+                    <span>Active</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btnPrimary" style="margin-top:12px;">
+                @(isEdit ? "Save changes" : "Create")
+            </button>
+        </form>
+    </div>
+</section>
+

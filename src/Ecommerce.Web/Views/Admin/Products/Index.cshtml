@@ -1,0 +1,57 @@
+@model Ecommerce.Web.ViewModels.AdminProductsIndexViewModel
+@{
+    ViewData["Title"] = "Manage products";
+}
+
+<section class="page">
+    <div class="container">
+        <div class="pageHeader">
+            <h1 class="pageTitle">Products</h1>
+            <p class="pageSubtitle">Admin CRUD</p>
+        </div>
+
+        <form method="get" action="/Admin/Products" class="form filterForm">
+            <div class="formField">
+                <label>Search</label>
+                <input name="search" value="@Model.Search" class="input" />
+            </div>
+            <div class="formField">
+                <label>CategoryId</label>
+                <input name="categoryId" value="@Model.CategoryId" class="input" />
+            </div>
+            <button type="submit" class="btn btnPrimary">Filter</button>
+            <a class="btn btnGhost" href="/Admin/Products/Create">+ Add</a>
+        </form>
+
+        @if (Model.Products.Items.Count == 0)
+        {
+            <div class="emptyState" style="padding:12px;color:rgba(229,231,235,.8)">No products found.</div>
+        }
+        else
+        {
+            <div class="ordersList">
+                @foreach (var p in Model.Products.Items)
+                {
+                    <div class="orderCard">
+                        <div class="orderCardRow">
+                            <strong>@p.Name</strong>
+                            <span class="muted">$@p.Price.ToString("0.00")</span>
+                        </div>
+                        <div class="orderCardRow">
+                            <span class="muted">Category</span>
+                            <strong>@p.CategoryName</strong>
+                        </div>
+                        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+                            <a class="btn btnPrimary" href="/Admin/Products/Edit/@p.Id">Edit</a>
+                            <form method="post" action="/Admin/Products/Delete/@p.Id" onsubmit="return confirm('Delete product?')" style="margin:0;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btnGhost">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+

@@ -1,0 +1,13 @@
+﻿ 
+@model Ecommerce.Web.ViewModels.HeroBannerViewModel
+
+<div class="heroBanner" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('@Model.BackgroundImage');">
+    <div class="heroBannerContent">
+        <h1 class="bannerTitle">@Model.Title</h1>
+        <p class="bannerSubtitle">@Model.Subtitle</p>
+        @if (!string.IsNullOrEmpty(Model.ButtonText))
+        {
+            <a href="@Model.ButtonUrl" class="btn btnPrimary btnLarge">@Model.ButtonText</a>
+        }
+    </div>
+</div>

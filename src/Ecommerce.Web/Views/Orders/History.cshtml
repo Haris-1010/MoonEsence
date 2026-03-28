@@ -1,0 +1,46 @@
+@model Ecommerce.Web.ViewModels.OrderHistoryViewModel
+@{
+    ViewData["Title"] = "Order history";
+}
+
+<section class="page">
+    <div class="container">
+        <h1 class="pageTitle">Order history</h1>
+
+        <form method="get" action="/Orders/History" class="form" style="margin-top:8px;">
+            <div class="formField">
+                <label>Email or phone</label>
+                <input name="emailOrPhone" class="input" placeholder="e.g. admin@local or 0300..." />
+            </div>
+            <button type="submit" class="btn btnPrimary">Find orders</button>
+        </form>
+
+        @if (Model.Orders.Items.Count == 0)
+        {
+            <div class="emptyState" style="padding:12px;color:rgba(229,231,235,.8)">No orders yet.</div>
+        }
+        else
+        {
+            <div class="ordersList">
+                @foreach (var o in Model.Orders.Items)
+                {
+                    <a class="orderCard" href="/Orders/Details/@o.OrderId?code=@o.AccessCode">
+                        <div class="orderCardRow">
+                            <strong>Order #@o.OrderId</strong>
+                            <span class="muted">@o.CreatedAt.ToString("yyyy-MM-dd")</span>
+                        </div>
+                        <div class="orderCardRow">
+                            <span class="muted">Status</span>
+                            <strong>@o.Status</strong>
+                        </div>
+                        <div class="orderCardRow">
+                            <span class="muted">Total</span>
+                            <strong>RS: @o.TotalAmount.ToString("0.00")</strong>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</section>
+

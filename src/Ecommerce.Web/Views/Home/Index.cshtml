@@ -1,0 +1,46 @@
+@model Ecommerce.Web.ViewModels.HomeIndexViewModel
+@{
+    ViewData["Title"] = "Shop";
+}
+
+<section class="page">
+    <div class="container">
+        <div class="pageHeader">
+            <h1 class="pageTitle">Shop</h1>
+            <p class="pageSubtitle">Mobile-first shopping experience</p>
+        </div>
+
+        <div class="filterBar" role="region" aria-label="Category filters">
+            <button type="button" class="filterChip is-active" data-category-id="">All</button>
+            @foreach (var c in Model.Categories)
+            {
+                <button type="button"
+                        class="filterChip @(Model.SelectedCategoryId == c.Id ? "is-active" : "")"
+                        data-category-id="@c.Id">
+                    @c.Name
+                </button>
+            }
+        </div>
+
+        <div class="filterBar subFilterBar" role="region" aria-label="Subcategory filters">
+            <button type="button"
+                    class="filterChip @(Model.SelectedSubCategoryId == null ? "is-active" : "")"
+                    data-subcategory-id="">
+                All subcategories
+            </button>
+            @foreach (var sc in Model.SubCategories)
+            {
+                <button type="button"
+                        class="filterChip @(Model.SelectedSubCategoryId == sc.Id ? "is-active" : "")"
+                        data-subcategory-id="@sc.Id">
+                    @sc.Name
+                </button>
+            }
+        </div>
+
+        <div id="productGrid">
+            @await Html.PartialAsync("~/Views/Catalog/_ProductGrid.cshtml", Model.Products)
+        </div>
+    </div>
+</section>
+

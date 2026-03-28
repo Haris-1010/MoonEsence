@@ -1,0 +1,23 @@
+C:\Development\eCommerceClean\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.deps.json
+C:\Development\eCommerceClean\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.dll
+C:\Development\eCommerceClean\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.pdb
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.AssemblyInfoInputs.cache
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.AssemblyInfo.cs
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.csproj.CoreCompileInputs.cache
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.dll
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\refint\Ecommerce.Domain.dll
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.pdb
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\ref\Ecommerce.Domain.dll
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.deps.json
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.dll
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.pdb
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.AssemblyInfoInputs.cache
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.AssemblyInfo.cs
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.csproj.CoreCompileInputs.cache
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.sourcelink.json
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.dll
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\refint\Ecommerce.Domain.dll
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.pdb
+D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\ref\Ecommerce.Domain.dll

@@ -1,0 +1,11 @@
+C:\Development\eCommerceClean\src\Ecommerce.Domain\bin\Release\net8.0\Ecommerce.Domain.deps.json
+C:\Development\eCommerceClean\src\Ecommerce.Domain\bin\Release\net8.0\Ecommerce.Domain.dll
+C:\Development\eCommerceClean\src\Ecommerce.Domain\bin\Release\net8.0\Ecommerce.Domain.pdb
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Release\net8.0\Ecommerce.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Release\net8.0\Ecommerce.Domain.AssemblyInfoInputs.cache
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Release\net8.0\Ecommerce.Domain.AssemblyInfo.cs
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Release\net8.0\Ecommerce.Domain.csproj.CoreCompileInputs.cache
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Release\net8.0\Ecommerce.Domain.dll
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Release\net8.0\refint\Ecommerce.Domain.dll
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Release\net8.0\Ecommerce.Domain.pdb
+C:\Development\eCommerceClean\src\Ecommerce.Domain\obj\Release\net8.0\ref\Ecommerce.Domain.dll
