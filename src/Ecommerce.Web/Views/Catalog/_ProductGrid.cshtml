@@ -32,9 +32,11 @@ else
                         </span>
                     </div>
                     <div class="productActions">
+                       
                         <button type="button"
                                 class="btn btnPrimary addToCartBtn"
                                 data-product-id="@p.Id"
+                                data-price="@p.Price"
                                 data-qty="1">
                             Add to cart
                         </button>
@@ -51,16 +53,6 @@ else
         }
     </div>
 
-    <div class="pagination">
-        @if (Model.Page > 1)
-        {
-            <a class="pageLink" href="#" data-page="@(@Model.Page - 1)" data-category-id="">Prev</a>
-        }
-        <span class="pageInfo">Page @Model.Page</span>
-        @if (Model.Page < Model.TotalPages)
-        {
-            <a class="pageLink" href="#" data-page="@(@Model.Page + 1)" data-category-id="">Next</a>
-        }
-    </div>
+   
 }
 

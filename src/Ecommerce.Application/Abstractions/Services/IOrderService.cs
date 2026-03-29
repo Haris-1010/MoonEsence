@@ -13,7 +13,7 @@ public interface IOrderService
         string city,
         string addressLine1,
         string? addressLine2,
-        string zipCode,
+        string zipCode, decimal deliveryCharge,
         IReadOnlyList<CartLineQuantityDto> lines,
         CancellationToken cancellationToken = default);
 

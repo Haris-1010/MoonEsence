@@ -27,7 +27,7 @@ public class OrderService : IOrderService
         string city,
         string addressLine1,
         string? addressLine2,
-        string? zipCode,
+        string? zipCode, decimal deliveryCharge,
         IReadOnlyList<CartLineQuantityDto> lines,
         CancellationToken cancellationToken = default)
     {
@@ -46,6 +46,7 @@ public class OrderService : IOrderService
             addressLine1,
             addressLine2,
             zipCode,
+            deliveryCharge,
             lines,
             cancellationToken);
 

@@ -2,6 +2,7 @@
 @using Ecommerce.Domain.Enums
 @{
     ViewData["Title"] = $"Admin order #{Model.Order.OrderId}";
+    decimal subtotal = Model.Order.TotalAmount - Model.Order.DeliveryCharge;
 }
 
 <section class="page">
@@ -12,23 +13,40 @@
         </div>
 
         <div class="panel">
-            <div class="cartRow">
-                <span>Status</span>
-                <strong>@Model.Order.Status</strong>
-            </div>
-            <div class="cartRow">
-                <span>Payment</span>
-                <strong>COD</strong>
-            </div>
-            <div class="cartRow">
-                <span>Placed on</span>
-                <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd")</strong>
-            </div>
-            <div class="cartRow">
-                <span>Total</span>
-                <strong>$@Model.Order.TotalAmount.ToString("0.00")</strong>
+            <div class="orderSummaryGrid">
+                <div class="cartRow">
+                    <span>Status</span>
+                    <strong>@Model.Order.Status</strong>
+                </div>
+                <div class="cartRow">
+                    <span>Payment</span>
+                    <strong>COD</strong>
+                </div>
+                <div class="cartRow">
+                    <span>Placed on</span>
+                    <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd")</strong>
+                </div>
             </div>
 
+            <!-- Delivery Breakdown -->
+            <div class="cartTotals" style="margin: 20px 0; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                <div class="cartRow">
+                    <span>Subtotal (Items)</span>
+                    <strong>RS: @subtotal.ToString("0.00")</strong>
+                </div>
+                <div class="cartRow">
+                    <span>Delivery Charges</span>
+                    <strong style="color: @(Model.Order.DeliveryCharge == 0 ? "#28a745" : "#333")">
+                        @(Model.Order.DeliveryCharge == 0 ? "FREE" : $"RS: {Model.Order.DeliveryCharge.ToString("0.00")}")
+                    </strong>
+                </div>
+                <div class="cartRow" style="font-size: 1.15em; font-weight: bold; border-top: 2px solid #000; padding-top: 10px; margin-top: 8px;">
+                    <span>Total Amount</span>
+                    <strong>RS: @Model.Order.TotalAmount.ToString("0.00")</strong>
+                </div>
+            </div>
+
+            <!-- Customer Information -->
             <div class="panel" style="margin-top:12px;">
                 <h2 class="panelTitle" style="margin-bottom:10px;">Customer</h2>
                 <div class="cartRow"><span>Name</span><strong>@Model.Order.FullName</strong></div>
@@ -42,7 +60,9 @@
                     <strong style="text-align:right;max-width:62%;">
                         @Model.Order.AddressLine1
                         @if (!string.IsNullOrWhiteSpace(Model.Order.AddressLine2))
-                        { <text><br />@Model.Order.AddressLine2</text> }
+                        {
+                            <text><br />@Model.Order.AddressLine2</text>
+                        }
                         <br />
                         @Model.Order.City - @Model.Order.ZipCode
                     </strong>
@@ -62,12 +82,13 @@
                     <img src="@item.ImageUrl" alt="@item.ProductName" />
                     <div>
                         <p class="cartItemTitle">@item.ProductName</p>
-                        <div class="cartItemMeta">@item.Quantity x $@item.UnitPrice.ToString("0.00")</div>
-                        <div class="cartItemMeta" style="margin-top:6px;color:var(--text);font-weight:800;">$@item.LineTotal.ToString("0.00")</div>
+                        <div class="cartItemMeta">@item.Quantity x RS: @item.UnitPrice.ToString("0.00")</div>
+                        <div class="cartItemMeta" style="margin-top:6px;color:var(--text);font-weight:800;">
+                            RS: @item.LineTotal.ToString("0.00")
+                        </div>
                     </div>
                 </div>
             }
         </div>
     </div>
 </section>
-

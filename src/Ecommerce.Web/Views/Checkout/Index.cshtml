@@ -1,9 +1,10 @@
-@model Ecommerce.Web.ViewModels.CheckoutViewModel
+﻿@model Ecommerce.Web.ViewModels.CheckoutViewModel
 @{
     ViewData["Title"] = "Checkout";
 
-    var deliveryCharges = 0;
-    var finalTotal = Model.Cart.Subtotal + deliveryCharges;
+    // Backend se aane wale values use kar rahe hain
+    var deliveryCharges = Model.Cart.DeliveryCharge;
+    var finalTotal = Model.Cart.FinalTotal;
 }
 
 <style>
@@ -48,15 +49,15 @@
                 <div class="cartItems" style="padding:0;gap:10px;">
                     @foreach (var line in Model.Cart.Lines)
                     {
-                        <div class="cartItem" style="grid-template-columns:64px 1fr;"> 
+                        <div class="cartItem" style="grid-template-columns:64px 1fr;">
                             <a href="/Catalog/Details/@line.ProductId">
                                 <img src="@line.ImageUrl" alt="@line.ProductName" style="cursor:pointer;" />
                             </a>
                             <div style="display: flex;justify-content: space-between;align-items: center;width:100%">
                                 <div><p class="cartItemTitle">@line.ProductName</p></div>
-                                <div class="cartItemMeta">@line.Quantity x @line.UnitPrice</div>
+                                <div class="cartItemMeta">@line.Quantity x @line.UnitPrice.ToString("0.00")</div>
                                 <div class="cartItemMeta" style="margin-top:6px;color:var(--text);font-weight:800;">
-                                    RS: @line.LineTotal
+                                    RS: @line.LineTotal.ToString("0.00")
                                 </div>
                             </div>
                         </div>
@@ -69,22 +70,34 @@
                         <span>Items Total</span>
                         <strong>RS: @Model.Cart.Subtotal.ToString("0.00")</strong>
                     </div>
-
                     <div class="cartRow">
                         <span>Delivery Charges</span>
-                        <strong>RS: @deliveryCharges</strong>
+                        <strong style="color: @(deliveryCharges == 0 ? "green" : "inherit")">
+                            @(deliveryCharges == 0 ? "FREE" : $"RS: {deliveryCharges.ToString("0.00")}")
+                        </strong>
                     </div>
-
                     <div class="cartRow">
                         <span><b>Total (Including Delivery)</b></span>
                         <strong>RS: @finalTotal.ToString("0.00")</strong>
                     </div>
-
                     <div class="cartRow">
                         <span>Total items</span>
                         <strong>@Model.Cart.TotalItems</strong>
                     </div>
                 </div>
+
+                @if (deliveryCharges == 0)
+                {
+                    <p style="color: green; font-weight: 600; margin-top: 8px;">
+                        🎉 Free delivery applied (2 or more items)
+                    </p>
+                }
+                else
+                {
+                    <p style="color: #666; margin-top: 8px;">
+                        Add one more item to get free delivery.
+                    </p>
+                }
             }
         </div>
 
@@ -92,28 +105,29 @@
         <form method="post" action="/Checkout" class="form">
             @Html.AntiForgeryToken()
 
+            <!-- Hidden field for Delivery Charge -->
+            <input type="hidden"
+                   asp-for="Checkout.DeliveryCharge"
+                   value="@Model.Cart.DeliveryCharge" />
+
             <h2 class="panelTitle" style="margin-top:16px;">Delivery details</h2>
 
             <div class="formGrid">
-
                 <div class="formField">
                     <label asp-for="Checkout.FullName"></label>
                     <input asp-for="Checkout.FullName" class="input" />
                     <span asp-validation-for="Checkout.FullName" class="fieldError"></span>
                 </div>
-
                 <div class="formField">
                     <label asp-for="Checkout.Phone"></label>
                     <input asp-for="Checkout.Phone" class="input" />
                     <span asp-validation-for="Checkout.Phone" class="fieldError"></span>
                 </div>
-
                 <div class="formField">
                     <label asp-for="Checkout.Email"></label>
                     <input asp-for="Checkout.Email" class="input" />
                     <span asp-validation-for="Checkout.Email" class="fieldError"></span>
                 </div>
-
                 <div class="formField">
                     <label asp-for="Checkout.City"></label>
                     <input asp-for="Checkout.City" class="input" list="citiesList" />
@@ -127,29 +141,24 @@
                     </datalist>
                     <span asp-validation-for="Checkout.City" class="fieldError"></span>
                 </div>
-
                 <div class="formField fullWidth">
                     <label asp-for="Checkout.AddressLine1">Address</label>
                     <input asp-for="Checkout.AddressLine1" class="input" />
                     <span asp-validation-for="Checkout.AddressLine1" class="fieldError"></span>
                 </div>
-
                 <div class="formField fullWidth">
                     <label asp-for="Checkout.AddressLine2">Address line 2 (optional)</label>
                     <input asp-for="Checkout.AddressLine2" class="input"
                            placeholder="Apartment, flat, house no, etc." />
                     <span asp-validation-for="Checkout.AddressLine2" class="fieldError"></span>
                 </div>
-
                 <div class="formField">
                     <label asp-for="Checkout.ZipCode">Postal Code</label>
                     <input asp-for="Checkout.ZipCode" class="input" />
                     <span asp-validation-for="Checkout.ZipCode" class="fieldError"></span>
                 </div>
-
             </div>
-
-            <!-- PAYMENT -->
+             
             <div class="panel" style="margin-top:10px;">
                 <div class="cartRow" style="margin:0;">
                     <span>Payment</span>

@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Ecommerce.Application.DTOs;
 
@@ -21,8 +21,11 @@ public class CartLineQuantityDto
 public class CartSummaryDto
 {
     public IReadOnlyList<CartLineDto> Lines { get; set; } = Array.Empty<CartLineDto>();
+
     public decimal Subtotal { get; set; }
-    public int TotalItems { get; set; }
+    public int TotalItems { get; set; } 
+    public decimal DeliveryCharge { get; set; }
+    public decimal FinalTotal { get; set; }        // Subtotal + DeliveryCharge
 }
 
 public class CheckoutDto
@@ -45,7 +48,8 @@ public class CheckoutDto
     [StringLength(200)]
     public string? AddressLine2 { get; set; }
 
-    [ StringLength(20, MinimumLength = 3)]
+    [StringLength(20, MinimumLength = 3)]
     public string? ZipCode { get; set; } = string.Empty;
-}
 
+    public decimal DeliveryCharge { get; set; }     
+}

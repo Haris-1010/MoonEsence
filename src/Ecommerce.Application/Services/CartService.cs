@@ -13,26 +13,29 @@ public class CartService : ICartService
         _products = products;
     }
 
-    public async Task<CartSummaryDto> BuildCartSummaryAsync(IReadOnlyList<CartLineQuantityDto> lines, CancellationToken cancellationToken = default)
+    public async Task<CartSummaryDto> BuildCartSummaryAsync(
+      IReadOnlyList<CartLineQuantityDto> lines,
+      CancellationToken cancellationToken = default)
     {
-        if (lines.Count == 0)
+        if (lines == null || lines.Count == 0)
         {
             return new CartSummaryDto
             {
                 Lines = Array.Empty<CartLineDto>(),
                 Subtotal = 0m,
-                TotalItems = 0
+                TotalItems = 0,
+                DeliveryCharge = 0m,
+                FinalTotal = 0m
             };
         }
 
         var productIds = lines.Select(x => x.ProductId).Distinct().ToArray();
         var productInfos = await _products.GetCartProductsAsync(productIds, cancellationToken);
-
         var productsById = productInfos.ToDictionary(p => p.ProductId, p => p);
 
         var resultLines = new List<CartLineDto>(lines.Count);
         decimal subtotal = 0m;
-        var totalItems = 0;
+        int totalItems = 0;
 
         foreach (var line in lines)
         {
@@ -45,6 +48,7 @@ public class CartService : ICartService
 
             var unitPrice = product.UnitPrice;
             var lineTotal = unitPrice * qty;
+
             subtotal += lineTotal;
             totalItems += qty;
 
@@ -56,14 +60,22 @@ public class CartService : ICartService
                 Quantity = qty,
                 ImageUrl = product.ImageUrl
             });
-        }
+        } 
+        const decimal DELIVERY_CHARGE = 230m;
+        decimal deliveryCharge = (totalItems >= 2) ? 0m : DELIVERY_CHARGE;
 
         return new CartSummaryDto
         {
             Lines = resultLines,
             Subtotal = subtotal,
-            TotalItems = totalItems
+            TotalItems = totalItems,
+            DeliveryCharge = deliveryCharge,
+            FinalTotal = subtotal + deliveryCharge    
         };
     }
+
+
+
+
 }
 

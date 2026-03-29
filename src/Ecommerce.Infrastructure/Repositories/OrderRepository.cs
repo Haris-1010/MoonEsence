@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using System.Linq;
 using Dapper;
 using Ecommerce.Application.Abstractions.Repositories;
@@ -19,15 +19,16 @@ public class OrderRepository : IOrderRepository
     }
 
     public async Task<CheckoutResultDto> CreateOrderAsync(
-        string fullName,
-        string phone,
-        string? email,
-        string city,
-        string addressLine1,
-        string? addressLine2,
-        string? zipCode,
-        IReadOnlyList<CartLineQuantityDto> lines,
-        CancellationToken cancellationToken = default)
+      string fullName,
+      string phone,
+      string? email,
+      string city,
+      string addressLine1,
+      string? addressLine2,
+      string? zipCode,
+      decimal deliveryCharge,                    // ← Received from checkout
+      IReadOnlyList<CartLineQuantityDto> lines,
+      CancellationToken cancellationToken = default)
     {
         if (lines is null || lines.Count == 0)
             throw new InvalidOperationException("Cart lines empty.");
@@ -38,7 +39,7 @@ public class OrderRepository : IOrderRepository
 
         var accessCode = Guid.NewGuid();
 
-        // Fetch current prices in one round-trip (only active products).
+        // Fetch current prices in one round-trip (only active products)
         const string productsSql = @"
 SELECT
     p.Id AS ProductId,
@@ -63,56 +64,65 @@ WHERE p.IsActive = 1
         var now = DateTime.UtcNow;
 
         using var tx = _connection.BeginTransaction();
-
         try
         {
-            const string insertOrderSql = @"
-INSERT INTO Orders (UserId, Status, PaymentMethod, CreatedAt, UpdatedAt, TotalAmount, FullName, Phone, Email, City, AddressLine1, AddressLine2, ZipCode, AccessCode)
-OUTPUT INSERTED.Id, INSERTED.AccessCode
-VALUES (@UserId, @Status, @PaymentMethod, @CreatedAt, @UpdatedAt, @TotalAmount, @FullName, @Phone, @Email, @City, @AddressLine1, @AddressLine2, @ZipCode, @AccessCode);";
-
-            // Compute totals
-            decimal totalAmount = 0m;
+            // Compute subtotal from products
+            decimal subtotal = 0m;
             var orderItems = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal LineTotal)>(lines.Count);
 
             foreach (var line in lines)
             {
                 var qty = Math.Max(0, line.Quantity);
-                if (qty == 0)
-                    continue;
+                if (qty == 0) continue;
 
                 var product = productInfos.First(p => p.ProductId == line.ProductId);
                 var lineTotal = product.UnitPrice * qty;
+
                 orderItems.Add((line.ProductId, qty, product.UnitPrice, lineTotal));
-                totalAmount += lineTotal;
+                subtotal += lineTotal;
             }
 
             if (orderItems.Count == 0)
                 throw new InvalidOperationException("Cart is empty.");
 
-            var result = await _connection.QuerySingleAsync<(long OrderId, Guid AccessCode)>(new CommandDefinition(
-                insertOrderSql,
-                new
-                {
-                    UserId = (int?)null,
-                    Status = (int)OrderStatus.Placed,
-                    PaymentMethod = (int)PaymentMethod.Cod,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    TotalAmount = totalAmount,
-                    FullName = fullName,
-                    Phone = phone,
-                    Email = email,
-                    City = city,
-                    AddressLine1 = addressLine1,
-                    AddressLine2 = addressLine2,
-                    ZipCode = zipCode ?? string.Empty,
+            // Final Total = Subtotal + Delivery Charge
+            decimal finalTotal = subtotal + deliveryCharge;
 
-                    AccessCode = accessCode
-                },
-                transaction: tx,
-                cancellationToken: cancellationToken));
+            // Updated INSERT SQL with DeliveryCharge
+            const string insertOrderSql = @"
+INSERT INTO Orders 
+    (UserId, Status, PaymentMethod, CreatedAt, UpdatedAt, TotalAmount, DeliveryCharge, 
+     FullName, Phone, Email, City, AddressLine1, AddressLine2, ZipCode, AccessCode)
+OUTPUT INSERTED.Id, INSERTED.AccessCode
+VALUES 
+    (@UserId, @Status, @PaymentMethod, @CreatedAt, @UpdatedAt, @TotalAmount, @DeliveryCharge,
+     @FullName, @Phone, @Email, @City, @AddressLine1, @AddressLine2, @ZipCode, @AccessCode);";
 
+            var result = await _connection.QuerySingleAsync<(long OrderId, Guid AccessCode)>(
+                new CommandDefinition(
+                    insertOrderSql,
+                    new
+                    {
+                        UserId = (int?)null,
+                        Status = (int)OrderStatus.Placed,
+                        PaymentMethod = (int)PaymentMethod.Cod,
+                        CreatedAt = now,
+                        UpdatedAt = now,
+                        TotalAmount = finalTotal,           // ← Final amount (Subtotal + Delivery)
+                        DeliveryCharge = deliveryCharge,    // ← Delivery charge separately saved
+                        FullName = fullName,
+                        Phone = phone,
+                        Email = email,
+                        City = city,
+                        AddressLine1 = addressLine1,
+                        AddressLine2 = addressLine2,
+                        ZipCode = zipCode ?? string.Empty,
+                        AccessCode = accessCode
+                    },
+                    transaction: tx,
+                    cancellationToken: cancellationToken));
+
+            // Insert Order Items
             const string insertItemSql = @"
 INSERT INTO OrderItems (OrderId, ProductId, Quantity, UnitPrice, LineTotal)
 VALUES (@OrderId, @ProductId, @Quantity, @UnitPrice, @LineTotal);";
@@ -134,7 +144,12 @@ VALUES (@OrderId, @ProductId, @Quantity, @UnitPrice, @LineTotal);";
             }
 
             tx.Commit();
-            return new CheckoutResultDto { OrderId = result.OrderId, AccessCode = result.AccessCode };
+
+            return new CheckoutResultDto
+            {
+                OrderId = result.OrderId,
+                AccessCode = result.AccessCode
+            };
         }
         catch
         {
@@ -142,7 +157,6 @@ VALUES (@OrderId, @ProductId, @Quantity, @UnitPrice, @LineTotal);";
             throw;
         }
     }
-
     public async Task<PagedResult<OrderSummaryDto>> GetOrderHistoryAsync(int userId, int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var offset = (page - 1) * pageSize;
@@ -280,7 +294,7 @@ SELECT
     City,
     AddressLine1,
     AddressLine2,
-    ZipCode
+    ZipCode,DeliveryCharge
 FROM Orders
 WHERE Id = @OrderId
   AND AccessCode = @AccessCode;";
@@ -323,6 +337,7 @@ SELECT
     CreatedAt,
     TotalAmount,
     AccessCode,
+DeliveryCharge,
     FullName,
     Phone,
     Email,

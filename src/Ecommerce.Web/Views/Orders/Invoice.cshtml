@@ -1,6 +1,7 @@
 @model Ecommerce.Web.ViewModels.OrderDetailViewModel
 @{
     ViewData["Title"] = $"Invoice #{Model.Order.OrderId}";
+    decimal subtotal = Model.Order.TotalAmount - Model.Order.DeliveryCharge;
 }
 
 <section class="page">
@@ -37,7 +38,9 @@
                 <div class="muted" style="margin-top:8px;">
                     Address: @Model.Order.AddressLine1
                     @if (!string.IsNullOrWhiteSpace(Model.Order.AddressLine2))
-                    { <text>, @Model.Order.AddressLine2</text> }
+                    {
+                        <text>, @Model.Order.AddressLine2</text>
+                    }
                     <br />
                     @Model.Order.City - @Model.Order.ZipCode
                 </div>
@@ -50,7 +53,6 @@
                     <div class="right">Price</div>
                     <div class="right">Total</div>
                 </div>
-
                 @foreach (var item in Model.Order.Items)
                 {
                     <div class="invoiceRow">
@@ -70,17 +72,29 @@
                 }
             </div>
 
+            <!-- Updated Totals Section -->
             <div class="invoiceTotals">
                 <div class="invoiceRow">
                     <div class="muted">Subtotal</div>
-                    <div><strong>RS:@Model.Order.TotalAmount.ToString("0.00")</strong></div>
+                    <div><strong>RS: @subtotal.ToString("0.00")</strong></div>
+                </div>
+                <div class="invoiceRow">
+                    <div class="muted">Delivery Charges</div>
+                    <div>
+                        <strong style="color:@(Model.Order.DeliveryCharge == 0 ? "#28a745" : "inherit")">
+                            @(Model.Order.DeliveryCharge == 0 ? "FREE" : $"RS: {Model.Order.DeliveryCharge.ToString("0.00")}")
+                        </strong>
+                    </div>
+                </div>
+                <div class="invoiceRow" style="font-weight:bold; font-size:1.15em; border-top:2px solid #333; margin-top:8px; padding-top:8px;">
+                    <div>Total Amount</div>
+                    <div>RS: @Model.Order.TotalAmount.ToString("0.00")</div>
                 </div>
             </div>
 
             <div class="invoiceActions noPrint">
-                <button type="button" class="btn btnPrimary" onclick="window.print()">Print</button>
+                <button type="button" class="btn btnPrimary" onclick="window.print()">Print Invoice</button>
             </div>
         </div>
     </div>
 </section>
-

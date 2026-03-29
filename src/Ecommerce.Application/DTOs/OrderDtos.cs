@@ -25,7 +25,7 @@ public class OrderDetailDto
     public string? FullName { get; set; }
     public string? Phone { get; set; }
     public string? Email { get; set; }
-
+    public decimal DeliveryCharge { get; set; }
     public string City { get; set; } = string.Empty;
     public string AddressLine1 { get; set; } = string.Empty;
     public string? AddressLine2 { get; set; }

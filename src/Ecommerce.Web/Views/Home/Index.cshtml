@@ -1,4 +1,4 @@
-@model Ecommerce.Web.ViewModels.HomeIndexViewModel
+﻿@model Ecommerce.Web.ViewModels.HomeIndexViewModel
 @{
     ViewData["Title"] = "Shop";
 }
@@ -8,6 +8,24 @@
         <div class="pageHeader">
             <h1 class="pageTitle">Shop</h1>
             <p class="pageSubtitle">Mobile-first shopping experience</p>
+        </div>
+
+        <!-- Promo banner: Buy 2 to get free delivery -->
+        <div class="promo-banner panel">
+            <div class="promo-inner">
+                <div class="promo-left">
+                    <div class="pill sale">-30%</div>
+                    <h2 class="promo-title">Spring Collection — Moon Essence</h2>
+                    <p class="promo-sub">Limited time: Free delivery on 2+ items. Grab your favorites before stock runs out!</p>
+                    <div class="promo-actions">
+                        <a href="/Products?filter=featured" class="btn btnPrimary">Shop Featured</a>
+                        <a href="/Collections/Spring" class="btn btnGhost">View Collection</a>
+                    </div>
+                </div>
+                <div class="promo-media">
+                    <img src="~/images/attar-crafting.jpg" alt="Promo" />
+                </div>
+            </div>
         </div>
 
         <div class="filterBar" role="region" aria-label="Category filters">
@@ -37,10 +55,7 @@
                 </button>
             }
         </div>
-
-        <div id="productGrid">
-            @await Html.PartialAsync("~/Views/Catalog/_ProductGrid.cshtml", Model.Products)
-        </div>
+        @await Html.PartialAsync("~/Views/Catalog/_ProductGrid.cshtml", Model.Products)
     </div>
 </section>
 

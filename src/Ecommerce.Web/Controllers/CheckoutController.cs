@@ -56,6 +56,7 @@ public class CheckoutController : Controller
             model.Checkout.AddressLine1,
             model.Checkout.AddressLine2,
             model.Checkout.ZipCode,
+            model.Checkout.DeliveryCharge,
             lines,
             cancellationToken);
 
