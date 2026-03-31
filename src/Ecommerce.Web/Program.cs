@@ -17,11 +17,24 @@ using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add MVC
+// Configure Kestrel - only for Railway
+var isRailway = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DATABASE_URL"));
+if (isRailway)
+{
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenAnyIP(8080);
+    });
+    Console.WriteLine("🚀 Running on Railway - binding to port 8080");
+}
+else
+{
+    Console.WriteLine("💻 Running locally - using default ports");
+}
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddMemoryCache();
 
-// Session
 builder.Services.AddSession(options =>
 {
     options.Cookie.HttpOnly = true;
@@ -29,13 +42,11 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromDays(7);
 });
 
-// CSRF token for AJAX POSTs
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "X-CSRF-TOKEN";
 });
 
-// Authentication & Authorization
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -49,25 +60,20 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-// SignalR
 builder.Services.AddSignalR();
 
-// Application services
 builder.Services.AddScoped<IClientCatalogService, ClientCatalogService>();
 builder.Services.AddScoped<IAdminCatalogService, AdminCatalogService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-// Get connection string - prioritize Railway's DATABASE_URL
 string connectionString = GetConnectionString(builder);
-Console.WriteLine($"Using database connection: {(connectionString.Contains("password") ? "Connected" : "Not configured")}");
+Console.WriteLine($"Using database: {(connectionString.Contains("railway") ? "Railway PostgreSQL" : "Local PostgreSQL")}");
 
-// PostgreSQL Connection Factory
 builder.Services.AddSingleton<IDbConnectionFactory>(sp => new PostgresConnectionFactory(connectionString));
 builder.Services.AddSingleton<IPasswordHasher, Pbkdf2PasswordHasher>();
 
-// Blob / Local storage
 var azureConn = builder.Configuration["Azure:BlobConnectionString"];
 var azureContainer = builder.Configuration["Azure:BlobContainerName"];
 if (!string.IsNullOrWhiteSpace(azureConn) && !string.IsNullOrWhiteSpace(azureContainer))
@@ -83,17 +89,70 @@ else
     });
 }
 
-// Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
-// SignalR publisher
 builder.Services.AddSingleton<IOrderEventPublisher, OrderEventPublisher>();
 
 var app = builder.Build();
+
+// Request logging middleware
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"[REQUEST] {context.Request.Method} {context.Request.Path}");
+    await next();
+    Console.WriteLine($"[RESPONSE] {context.Response.StatusCode} for {context.Request.Path}");
+});
+
+// Health check endpoint
+app.MapGet("/health", async (IDbConnectionFactory dbFactory) =>
+{
+    Console.WriteLine("Health check endpoint hit!");
+    try
+    {
+        using var connection = dbFactory.CreateConnection();
+        connection.Open();
+        return Results.Ok(new
+        {
+            status = "Healthy",
+            database = "Connected",
+            timestamp = DateTime.UtcNow,
+            environment = app.Environment.EnvironmentName,
+            platform = isRailway ? "Railway" : "Local"
+        });
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Health check failed: {ex.Message}");
+        return Results.Json(new { status = "Unhealthy", error = ex.Message }, statusCode: 503);
+    }
+});
+
+// Test endpoints
+app.MapGet("/test", () => Results.Json(new
+{
+    message = "API is working!",
+    time = DateTime.UtcNow,
+    environment = app.Environment.EnvironmentName,
+    platform = isRailway ? "Railway" : "Local"
+}));
+
+app.MapGet("/test-db", async (IDbConnectionFactory dbFactory) =>
+{
+    try
+    {
+        using var connection = dbFactory.CreateConnection();
+        connection.Open();
+        return Results.Json(new { success = true, message = "Database connected successfully!" });
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { success = false, error = ex.Message });
+    }
+});
 
 // Test database connection on startup
 using (var scope = app.Services.CreateScope())
@@ -105,15 +164,27 @@ using (var scope = app.Services.CreateScope())
         connection.Open();
         Console.WriteLine("✅ Database connection successful!");
 
-        // Optional: Test a simple query
         using var cmd = connection.CreateCommand();
         cmd.CommandText = "SELECT 1";
-        cmd.ExecuteScalar();
+        // Fix: Cast to NpgsqlCommand to use ExecuteScalarAsync
+        if (cmd is Npgsql.NpgsqlCommand npgsqlCmd)
+        {
+            await npgsqlCmd.ExecuteScalarAsync();
+        }
+        else
+        {
+            // Fallback to synchronous if not NpgsqlCommand
+            cmd.ExecuteScalar();
+        }
         Console.WriteLine("✅ Database query test successful!");
     }
     catch (Exception ex)
     {
         Console.WriteLine($"❌ Database connection failed: {ex.Message}");
+        if (!isRailway)
+        {
+            Console.WriteLine("💡 Tip: Make sure PostgreSQL is running locally and database 'EcommerceDb' exists");
+        }
     }
 }
 
@@ -136,23 +207,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapGet("/health", async (IDbConnectionFactory dbFactory) =>
-{
-    try
-    {
-        using var connection = dbFactory.CreateConnection();
-        connection.Open();
-        using var cmd = connection.CreateCommand();
-        cmd.CommandText = "SELECT 1";
-        cmd.ExecuteScalar();
-        return Results.Ok(new { status = "Healthy", database = "Connected", timestamp = DateTime.UtcNow });
-    }
-    catch (Exception ex)
-    {
-        return Results.StatusCode(503);
-    }
-});
-
+Console.WriteLine($"Application starting - {(isRailway ? "listening on http://0.0.0.0:8080" : "running locally")}");
 app.Run();
 
 string GetConnectionString(WebApplicationBuilder builder)
@@ -182,7 +237,7 @@ string GetConnectionString(WebApplicationBuilder builder)
     var configConnection = builder.Configuration.GetConnectionString("DefaultConnection");
     if (!string.IsNullOrWhiteSpace(configConnection))
     {
-        Console.WriteLine("📝 Using connection string from appsettings.json");
+        Console.WriteLine("📝 Using connection string from appsettings.json (local development)");
         return configConnection;
     }
 
