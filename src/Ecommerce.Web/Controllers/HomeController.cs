@@ -36,6 +36,43 @@ public class HomeController : Controller
         return View(vm);
     }
 
+    public async Task<IActionResult> Featured(int? categoryId, int? subCategoryId, int page = 1, CancellationToken cancellationToken = default)
+    {
+        var categories = await _catalog.GetActiveCategoriesAsync(cancellationToken);
+        var subCategories = categoryId.HasValue ? await _catalog.GetActiveSubCategoriesAsync(categoryId.Value, cancellationToken) : Array.Empty<SubCategoryDto>();
+        var products = await _catalog.GetProductsAsync(categoryId, subCategoryId, page, pageSize: 12, cancellationToken);
+
+        var vm = new HomeIndexViewModel
+        {
+            Categories = categories,
+            SubCategories = subCategories,
+            Products = products,
+            SelectedCategoryId = categoryId,
+            SelectedSubCategoryId = subCategoryId,
+            CurrentPage = page
+        };
+
+        return View(vm);
+    }
+    public async Task<IActionResult> Collections(int? categoryId, int? subCategoryId, int page = 1, CancellationToken cancellationToken = default)
+    {
+        var categories = await _catalog.GetActiveCategoriesAsync(cancellationToken);
+        var subCategories = categoryId.HasValue ? await _catalog.GetActiveSubCategoriesAsync(categoryId.Value, cancellationToken) : Array.Empty<SubCategoryDto>();
+        var products = await _catalog.GetProductsAsync(categoryId, subCategoryId, page, pageSize: 12, cancellationToken);
+
+        var vm = new HomeIndexViewModel
+        {
+            Categories = categories,
+            SubCategories = subCategories,
+            Products = products,
+            SelectedCategoryId = categoryId,
+            SelectedSubCategoryId = subCategoryId,
+            CurrentPage = page
+        };
+
+        return View(vm);
+    }
+
     [HttpGet("/Privacy")]
     public IActionResult Privacy() => View();
 

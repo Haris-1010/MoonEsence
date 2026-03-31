@@ -12,7 +12,8 @@
           "Ecommerce.Infrastructure": "1.0.0",
           "Microsoft.AspNetCore.Authentication.Cookies": "2.3.9",
           "Microsoft.AspNetCore.Session": "2.3.9",
-          "Microsoft.AspNetCore.SignalR": "1.2.9"
+          "Microsoft.AspNetCore.SignalR": "1.2.9",
+          "Npgsql": "10.0.2"
         },
         "runtime": {
           "Ecommerce.Web.dll": {}
@@ -590,6 +591,18 @@
           }
         }
       },
+      "Npgsql/10.0.2": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
+          "System.Diagnostics.DiagnosticSource": "9.0.11"
+        },
+        "runtime": {
+          "lib/net8.0/Npgsql.dll": {
+            "assemblyVersion": "10.0.2.0",
+            "fileVersion": "10.0.2.0"
+          }
+        }
+      },
       "System.Buffers/4.6.0": {},
       "System.ClientModel/1.8.0": {
         "dependencies": {
@@ -612,6 +625,14 @@
           "lib/net8.0/System.Configuration.ConfigurationManager.dll": {
             "assemblyVersion": "8.0.0.0",
             "fileVersion": "8.0.1024.46610"
+          }
+        }
+      },
+      "System.Diagnostics.DiagnosticSource/9.0.11": {
+        "runtime": {
+          "lib/net8.0/System.Diagnostics.DiagnosticSource.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1125.51716"
           }
         }
       },
@@ -1175,6 +1196,13 @@
       "path": "newtonsoft.json/11.0.2",
       "hashPath": "newtonsoft.json.11.0.2.nupkg.sha512"
     },
+    "Npgsql/10.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-q5RfBI+wywJSFUNDE1L4ZbHEHCFTblo8Uf6A6oe4feOUFYiUQXyAf9GBh5qEZpvJaHiEbpBPkQumjEhXCJxdrg==",
+      "path": "npgsql/10.0.2",
+      "hashPath": "npgsql.10.0.2.nupkg.sha512"
+    },
     "System.Buffers/4.6.0": {
       "type": "package",
       "serviceable": true,
@@ -1195,6 +1223,13 @@
       "sha512": "sha512-gPYFPDyohW2gXNhdQRSjtmeS6FymL2crg4Sral1wtvEJ7DUqFCDWDVbbLobASbzxfic8U1hQEdC7hmg9LHncMw==",
       "path": "system.configuration.configurationmanager/8.0.1",
       "hashPath": "system.configuration.configurationmanager.8.0.1.nupkg.sha512"
+    },
+    "System.Diagnostics.DiagnosticSource/9.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/QzMFklOm8Ak//YB0I2kR+ByxUndT63ucrRWQm0xZsuLExJWrVDeGKtYZDuBackd9dThbwMdOotIEc4c4KwJiw==",
+      "path": "system.diagnostics.diagnosticsource/9.0.11",
+      "hashPath": "system.diagnostics.diagnosticsource.9.0.11.nupkg.sha512"
     },
     "System.Diagnostics.EventLog/8.0.1": {
       "type": "package",

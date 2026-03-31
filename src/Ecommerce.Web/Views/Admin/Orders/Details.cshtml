@@ -1,4 +1,4 @@
-@model Ecommerce.Web.ViewModels.OrderDetailViewModel
+﻿@model Ecommerce.Web.ViewModels.OrderDetailViewModel
 @using Ecommerce.Domain.Enums
 @{
     ViewData["Title"] = $"Admin order #{Model.Order.OrderId}";
@@ -20,27 +20,31 @@
                 </div>
                 <div class="cartRow">
                     <span>Payment</span>
-                    <strong>COD</strong>
+                    <strong>COD <span style=" font-family: monospace;">(Cash on Delivery)</span></strong>
                 </div>
                 <div class="cartRow">
-                    <span>Placed on</span>
-                    <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd")</strong>
+                    <span>Ordered Date</span>
+                    <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd  ")  </strong>
+                </div>
+                <div class="cartRow">
+                    <span>Ordered Time</span>
+                    <strong>@Model.Order.CreatedAt.ToString("  hh:mm tt")  </strong>
                 </div>
             </div>
 
             <!-- Delivery Breakdown -->
-            <div class="cartTotals" style="margin: 20px 0; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+            <div class="cartTotals" style="margin: 20px 0; padding: 12px; border-radius: 8px;">
                 <div class="cartRow">
                     <span>Subtotal (Items)</span>
                     <strong>RS: @subtotal.ToString("0.00")</strong>
                 </div>
                 <div class="cartRow">
                     <span>Delivery Charges</span>
-                    <strong style="color: @(Model.Order.DeliveryCharge == 0 ? "#28a745" : "#333")">
+                    <strong style="color: @(Model.Order.DeliveryCharge == 0 ? "#28a745" : "white")">
                         @(Model.Order.DeliveryCharge == 0 ? "FREE" : $"RS: {Model.Order.DeliveryCharge.ToString("0.00")}")
                     </strong>
                 </div>
-                <div class="cartRow" style="font-size: 1.15em; font-weight: bold; border-top: 2px solid #000; padding-top: 10px; margin-top: 8px;">
+                <div class="cartRow" style="font-size: 1.15em; font-weight: bold; border-top: 2px solid #374151; padding-top: 10px; margin-top: 8px;">
                     <span>Total Amount</span>
                     <strong>RS: @Model.Order.TotalAmount.ToString("0.00")</strong>
                 </div>
@@ -90,5 +94,73 @@
                 </div>
             }
         </div>
+
+        <!-- Optional: Add order timeline for better tracking -->
+        <div class="panel" style="margin-top: 20px;">
+            <h2 class="panelTitle" style="margin-bottom:10px;">Order Timeline</h2>
+            <div class="orderTimeline">
+                <div class="timelineItem">
+                    <div class="timelineIcon">📦</div>
+                    <div class="timelineContent">
+                        <strong>Order Placed</strong>
+                        <span class="timelineDate">@Model.Order.CreatedAt.ToString("yyyy-MM-dd hh:mm tt") UTC</span>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
     </div>
 </section>
+
+<style>
+    .orderTimeline {
+        margin-top: 16px;
+    }
+
+    .timelineItem {
+        display: flex;
+        gap: 16px;
+        padding: 12px 0;
+        border-left: 2px solid #374151;
+        margin-left: 20px;
+        position: relative;
+    }
+
+        .timelineItem:last-child {
+            border-left: 2px solid transparent;
+        }
+
+    .timelineIcon {
+        font-size: 20px;
+        margin-left: -28px;
+        background: #1F2937;
+        padding: 4px;
+        border-radius: 50%;
+        width: 32px;
+        text-align: center;
+    }
+
+    .timelineContent {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .timelineDate {
+        color: rgba(229,231,235,.6);
+        font-size: 0.85em;
+    }
+
+    @@media (max-width: 768px) {
+        .timelineContent
+
+    {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    }
+</style>

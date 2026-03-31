@@ -1554,23 +1554,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
+    "C:\\Users\\Dall\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj",
+      "projectUniqueName": "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj",
       "projectName": "Ecommerce.Infrastructure",
-      "projectPath": "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Infrastructure\\obj\\",
+      "projectPath": "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj",
+      "packagesPath": "C:\\Users\\Dall\\.nuget\\packages\\",
+      "outputPath": "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Dall\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -1579,18 +1579,17 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Application\\Ecommerce.Application.csproj": {
-              "projectPath": "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Application\\Ecommerce.Application.csproj"
+            "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Application\\Ecommerce.Application.csproj": {
+              "projectPath": "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Application\\Ecommerce.Application.csproj"
             },
-            "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Domain\\Ecommerce.Domain.csproj": {
-              "projectPath": "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Domain\\Ecommerce.Domain.csproj"
+            "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Domain\\Ecommerce.Domain.csproj": {
+              "projectPath": "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Domain\\Ecommerce.Domain.csproj"
             }
           }
         }
@@ -1640,7 +1639,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

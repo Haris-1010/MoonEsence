@@ -9,53 +9,55 @@ namespace Ecommerce.Infrastructure.Repositories;
 
 public class CategoryRepository : ICategoryRepository
 {
-    private readonly IDbConnection _connection;
+    private readonly IDbConnectionFactory _connectionFactory;
 
     public CategoryRepository(IDbConnectionFactory connectionFactory)
     {
-        _connection = connectionFactory.CreateConnection();
+        _connectionFactory = connectionFactory;
     }
 
     public async Task<IReadOnlyList<CategoryDto>> GetActiveAsync(CancellationToken cancellationToken = default)
     {
         const string sql = @"
-SELECT Id, Name, Description, IsActive
-FROM Categories
-WHERE IsActive = 1
-ORDER BY CreatedAt DESC;";
+SELECT ""Id"", ""Name"", ""Description"", ""IsActive""
+FROM ""Categories""
+WHERE ""IsActive"" = TRUE
+ORDER BY ""CreatedAt"" DESC;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        var items = await _connection.QueryAsync<CategoryDto>(new CommandDefinition(sql, cancellationToken: cancellationToken));
+        var items = await conn.QueryAsync<CategoryDto>(new CommandDefinition(sql, cancellationToken: cancellationToken));
         return items.ToList();
     }
 
     public async Task<CategoryDto?> GetByIdAsync(int categoryId, CancellationToken cancellationToken = default)
     {
         const string sql = @"
-SELECT Id, Name, Description, IsActive
-FROM Categories
-WHERE Id = @CategoryId;";
+SELECT ""Id"", ""Name"", ""Description"", ""IsActive""
+FROM ""Categories""
+WHERE ""Id"" = @CategoryId;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        return await _connection.QuerySingleOrDefaultAsync<CategoryDto>(
-            new CommandDefinition(sql, new { CategoryId = categoryId }, cancellationToken: cancellationToken));
+        return await conn.QuerySingleOrDefaultAsync<CategoryDto>(new CommandDefinition(sql, new { CategoryId = categoryId }, cancellationToken: cancellationToken));
     }
 
     public async Task<int> CreateAsync(CategoryDto category, CancellationToken cancellationToken = default)
     {
         const string sql = @"
-INSERT INTO Categories (Name, Description, IsActive, CreatedAt)
-OUTPUT INSERTED.Id
-VALUES (@Name, @Description, @IsActive, SYSUTCDATETIME());";
+INSERT INTO ""Categories"" (""Name"", ""Description"", ""IsActive"", ""CreatedAt"")
+VALUES (@Name, @Description, @IsActive, NOW())
+RETURNING ""Id"";";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        return await _connection.ExecuteScalarAsync<int>(new CommandDefinition(sql, new
+        return await conn.ExecuteScalarAsync<int>(new CommandDefinition(sql, new
         {
             Name = category.Name,
             Description = category.Description,
@@ -66,16 +68,17 @@ VALUES (@Name, @Description, @IsActive, SYSUTCDATETIME());";
     public async Task UpdateAsync(CategoryDto category, CancellationToken cancellationToken = default)
     {
         const string sql = @"
-UPDATE Categories
-SET Name = @Name,
-    Description = @Description,
-    IsActive = @IsActive
-WHERE Id = @Id;";
+UPDATE ""Categories""
+SET ""Name"" = @Name,
+    ""Description"" = @Description,
+    ""IsActive"" = @IsActive
+WHERE ""Id"" = @Id;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        await _connection.ExecuteAsync(new CommandDefinition(sql, new
+        await conn.ExecuteAsync(new CommandDefinition(sql, new
         {
             Id = category.Id,
             Name = category.Name,
@@ -87,15 +90,15 @@ WHERE Id = @Id;";
     public async Task<bool> DeleteAsync(int categoryId, CancellationToken cancellationToken = default)
     {
         const string sql = @"
-UPDATE Categories
-SET IsActive = 0
-WHERE Id = @CategoryId;";
+UPDATE ""Categories""
+SET ""IsActive"" = FALSE
+WHERE ""Id"" = @CategoryId;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        var rows = await _connection.ExecuteAsync(new CommandDefinition(sql, new { CategoryId = categoryId }, cancellationToken: cancellationToken));
+        var rows = await conn.ExecuteAsync(new CommandDefinition(sql, new { CategoryId = categoryId }, cancellationToken: cancellationToken));
         return rows > 0;
     }
 }
-

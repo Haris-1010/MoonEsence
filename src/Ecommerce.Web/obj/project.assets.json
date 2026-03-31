@@ -1108,6 +1108,23 @@
           }
         }
       },
+      "Npgsql/10.0.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
+          "System.Diagnostics.DiagnosticSource": "9.0.11"
+        },
+        "compile": {
+          "lib/net8.0/Npgsql.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Npgsql.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "System.Buffers/4.6.0": {
         "type": "package",
         "compile": {
@@ -1152,6 +1169,22 @@
         },
         "build": {
           "buildTransitive/net6.0/_._": {}
+        }
+      },
+      "System.Diagnostics.DiagnosticSource/9.0.11": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/System.Diagnostics.DiagnosticSource.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/System.Diagnostics.DiagnosticSource.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
         }
       },
       "System.Diagnostics.EventLog/8.0.1": {
@@ -2730,6 +2763,25 @@
         "newtonsoft.json.nuspec"
       ]
     },
+    "Npgsql/10.0.2": {
+      "sha512": "q5RfBI+wywJSFUNDE1L4ZbHEHCFTblo8Uf6A6oe4feOUFYiUQXyAf9GBh5qEZpvJaHiEbpBPkQumjEhXCJxdrg==",
+      "type": "package",
+      "path": "npgsql/10.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net10.0/Npgsql.dll",
+        "lib/net10.0/Npgsql.xml",
+        "lib/net8.0/Npgsql.dll",
+        "lib/net8.0/Npgsql.xml",
+        "lib/net9.0/Npgsql.dll",
+        "lib/net9.0/Npgsql.xml",
+        "npgsql.10.0.2.nupkg.sha512",
+        "npgsql.nuspec",
+        "postgresql.png"
+      ]
+    },
     "System.Buffers/4.6.0": {
       "sha512": "lN6tZi7Q46zFzAbRYXTIvfXcyvQQgxnY7Xm6C6xQ9784dEL1amjM6S6Iw4ZpsvesAKnRVsM4scrDQaDqSClkjA==",
       "type": "package",
@@ -2798,6 +2850,33 @@
         "lib/netstandard2.0/System.Configuration.ConfigurationManager.xml",
         "system.configuration.configurationmanager.8.0.1.nupkg.sha512",
         "system.configuration.configurationmanager.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "System.Diagnostics.DiagnosticSource/9.0.11": {
+      "sha512": "/QzMFklOm8Ak//YB0I2kR+ByxUndT63ucrRWQm0xZsuLExJWrVDeGKtYZDuBackd9dThbwMdOotIEc4c4KwJiw==",
+      "type": "package",
+      "path": "system.diagnostics.diagnosticsource/9.0.11",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.Diagnostics.DiagnosticSource.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Diagnostics.DiagnosticSource.targets",
+        "lib/net462/System.Diagnostics.DiagnosticSource.dll",
+        "lib/net462/System.Diagnostics.DiagnosticSource.xml",
+        "lib/net8.0/System.Diagnostics.DiagnosticSource.dll",
+        "lib/net8.0/System.Diagnostics.DiagnosticSource.xml",
+        "lib/net9.0/System.Diagnostics.DiagnosticSource.dll",
+        "lib/net9.0/System.Diagnostics.DiagnosticSource.xml",
+        "lib/netstandard2.0/System.Diagnostics.DiagnosticSource.dll",
+        "lib/netstandard2.0/System.Diagnostics.DiagnosticSource.xml",
+        "system.diagnostics.diagnosticsource.9.0.11.nupkg.sha512",
+        "system.diagnostics.diagnosticsource.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
@@ -3319,27 +3398,28 @@
       "Ecommerce.Infrastructure >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.Cookies >= 2.3.9",
       "Microsoft.AspNetCore.Session >= 2.3.9",
-      "Microsoft.AspNetCore.SignalR >= 1.2.9"
+      "Microsoft.AspNetCore.SignalR >= 1.2.9",
+      "Npgsql >= 10.0.2"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
+    "C:\\Users\\Dall\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Web\\Ecommerce.Web.csproj",
+      "projectUniqueName": "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Web\\Ecommerce.Web.csproj",
       "projectName": "Ecommerce.Web",
-      "projectPath": "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Web\\Ecommerce.Web.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Web\\obj\\",
+      "projectPath": "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Web\\Ecommerce.Web.csproj",
+      "packagesPath": "C:\\Users\\Dall\\.nuget\\packages\\",
+      "outputPath": "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Web\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Dall\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3348,18 +3428,17 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Application\\Ecommerce.Application.csproj": {
-              "projectPath": "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Application\\Ecommerce.Application.csproj"
+            "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Application\\Ecommerce.Application.csproj": {
+              "projectPath": "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Application\\Ecommerce.Application.csproj"
             },
-            "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj": {
-              "projectPath": "D:\\Haris Dev\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj"
+            "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj": {
+              "projectPath": "C:\\Development\\MoonEsence\\MoonEsence\\ecommerce-store\\src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj"
             }
           }
         }
@@ -3391,6 +3470,10 @@
           "Microsoft.AspNetCore.SignalR": {
             "target": "Package",
             "version": "[1.2.9, )"
+          },
+          "Npgsql": {
+            "target": "Package",
+            "version": "[10.0.2, )"
           }
         },
         "imports": [
@@ -3412,7 +3495,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -1,6 +1,6 @@
 ﻿@model Ecommerce.Web.ViewModels.HomeIndexViewModel
 @{
-    ViewData["Title"] = "Shop";
+    ViewData["Title"] = "Shop"; ViewData["PageType"] = "Home";
 }
 
 <section class="page">
@@ -18,8 +18,8 @@
                     <h2 class="promo-title">Spring Collection — Moon Essence</h2>
                     <p class="promo-sub">Limited time: Free delivery on 2+ items. Grab your favorites before stock runs out!</p>
                     <div class="promo-actions">
-                        <a href="/Products?filter=featured" class="btn btnPrimary">Shop Featured</a>
-                        <a href="/Collections/Spring" class="btn btnGhost">View Collection</a>
+                        <a href="/Home/Featured" class="btn btnPrimary">Shop Featured</a>
+                        <a href="/Home/Collections" class="btn btnGhost">View Collection</a>
                     </div>
                 </div>
                 <div class="promo-media">

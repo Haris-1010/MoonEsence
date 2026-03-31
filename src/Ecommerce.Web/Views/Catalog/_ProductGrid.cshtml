@@ -1,4 +1,4 @@
-@model Ecommerce.Application.Shared.PagedResult<Ecommerce.Application.DTOs.ProductListItemDto>
+﻿@model Ecommerce.Application.Shared.PagedResult<Ecommerce.Application.DTOs.ProductListItemDto>
 
 @if (Model.Items.Count == 0)
 {
@@ -7,7 +7,24 @@
 else
 {
     <div class="productGrid" role="list">
-        @foreach (var p in Model.Items)
+        @{ 
+            IEnumerable<Ecommerce.Application.DTOs.ProductListItemDto> products = Model.Items;
+
+            if (ViewData["PageType"] != null && ViewData["PageType"].ToString() == "Featured")
+            { 
+                products = products.OrderByDescending(p => p.Name);
+            }
+            else if (ViewData["PageType"] != null && ViewData["PageType"].ToString() == "Collection")
+            { 
+                products = products.OrderBy(p => p.Price);
+            }
+            else if (ViewData["PageType"] != null && ViewData["PageType"].ToString() == "Home")
+            { 
+                products = products.OrderBy(p => p.Id);
+            }
+        }
+
+        @foreach (var p in products)
         {
             <article class="productCard" role="listitem">
                 <a class="productMedia" href="/Catalog/Details/@p.Id" aria-label="View @p.Name">
@@ -16,43 +33,22 @@ else
                 <div class="productBody">
                     <h3 class="productTitle">@p.Name</h3>
                     <div class="productMeta">
-                        @{
-                            decimal regularPrice = p.RegularPrice;  
-                            decimal salePrice = p.Price;         
-                        }
-
                         <span class="productPrice">
                             <span class="regularPrice" style="font-weight:500; text-decoration: line-through; color:#888;">
-                                Rs.@regularPrice.ToString("N2")
+                                Rs.@p.RegularPrice.ToString("N2")
                             </span>
                             <span class="salePrice" style="font-weight:500; margin-left:5px;">
-                                Rs.@salePrice.ToString("N2")
+                                Rs.@p.Price.ToString("N2")
                             </span>
-                            
                         </span>
                     </div>
                     <div class="productActions">
-                       
-                        <button type="button"
-                                class="btn btnPrimary addToCartBtn"
-                                data-product-id="@p.Id"
-                                data-price="@p.Price"
-                                data-qty="1">
-                            Add to cart
-                        </button>
-                        <button type="button"
-                                class="btn btnGhost buyNowBtn"
-                                data-product-id="@p.Id"
-                                data-qty="1">
-                            Buy now
-                        </button>
+                        <button type="button" class="btn btnPrimary addToCartBtn" data-product-id="@p.Id" data-price="@p.Price" data-qty="1">Add to cart</button>
+                        <button type="button" class="btn btnGhost buyNowBtn" data-product-id="@p.Id" data-qty="1">Buy now</button>
                         <a class="btn btnGhost" href="/Catalog/Details/@p.Id">Details</a>
                     </div>
                 </div>
             </article>
         }
     </div>
-
-   
 }
-

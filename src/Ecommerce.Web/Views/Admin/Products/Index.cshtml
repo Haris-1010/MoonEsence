@@ -21,6 +21,7 @@
             </div>
             <button type="submit" class="btn btnPrimary">Filter</button>
             <a class="btn btnGhost" href="/Admin/Products/Create">+ Add</a>
+            <br />
         </form>
 
         @if (Model.Products.Items.Count == 0)
@@ -28,22 +29,22 @@
             <div class="emptyState" style="padding:12px;color:rgba(229,231,235,.8)">No products found.</div>
         }
         else
-        {
+        {<h1>All Products</h1>
             <div class="ordersList">
                 @foreach (var p in Model.Products.Items)
                 {
                     <div class="orderCard">
                         <div class="orderCardRow">
                             <strong>@p.Name</strong>
-                            <span class="muted">$@p.Price.ToString("0.00")</span>
+                            <span class="muted">Rs: @p.Price.ToString("0.00")</span>
                         </div>
                         <div class="orderCardRow">
                             <span class="muted">Category</span>
                             <strong>@p.CategoryName</strong>
                         </div>
-                        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
-                            <a class="btn btnPrimary" href="/Admin/Products/Edit/@p.Id">Edit</a>
-                            <form method="post" action="/Admin/Products/Delete/@p.Id" onsubmit="return confirm('Delete product?')" style="margin:0;">
+                        <div class="btns">
+                            <a class="btn btnPrimary editbtn" href="/Admin/Products/Edit/@p.Id">Edit</a>
+                            <form method="post" action="/Admin/Products/Delete/@p.Id" onsubmit="return confirm('Delete product?')" style="margin:0;width: 48%;">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btnGhost">Delete</button>
                             </form>
@@ -55,3 +56,18 @@
     </div>
 </section>
 
+<style>
+    .btns{
+        display:flex;
+        justify-content:space-between
+    }
+
+    .editbtn {
+        width: 48% !important
+        ;
+    }
+    .btnGhost {
+        width: 100% !important;
+    }
+ 
+</style>

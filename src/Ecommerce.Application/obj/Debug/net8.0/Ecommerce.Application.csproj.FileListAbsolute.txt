@@ -29,3 +29,19 @@ D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Application\obj\Debug\n
 D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Application\obj\Debug\net8.0\refint\Ecommerce.Application.dll
 D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Application\obj\Debug\net8.0\Ecommerce.Application.pdb
 D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Application\obj\Debug\net8.0\ref\Ecommerce.Application.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\bin\Debug\net8.0\Ecommerce.Application.deps.json
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\bin\Debug\net8.0\Ecommerce.Application.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\bin\Debug\net8.0\Ecommerce.Application.pdb
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\bin\Debug\net8.0\Ecommerce.Domain.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\bin\Debug\net8.0\Ecommerce.Domain.pdb
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\obj\Debug\net8.0\Ecommerce.Application.csproj.AssemblyReference.cache
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\obj\Debug\net8.0\Ecommerce.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\obj\Debug\net8.0\Ecommerce.Application.AssemblyInfoInputs.cache
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\obj\Debug\net8.0\Ecommerce.Application.AssemblyInfo.cs
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\obj\Debug\net8.0\Ecommerce.Application.csproj.CoreCompileInputs.cache
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\obj\Debug\net8.0\Ecommerce.Application.sourcelink.json
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\obj\Debug\net8.0\Ecommerc.C5F54E74.Up2Date
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\obj\Debug\net8.0\Ecommerce.Application.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\obj\Debug\net8.0\refint\Ecommerce.Application.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\obj\Debug\net8.0\Ecommerce.Application.pdb
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Application\obj\Debug\net8.0\ref\Ecommerce.Application.dll

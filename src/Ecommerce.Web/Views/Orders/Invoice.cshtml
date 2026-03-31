@@ -1,4 +1,4 @@
-@model Ecommerce.Web.ViewModels.OrderDetailViewModel
+﻿@model Ecommerce.Web.ViewModels.OrderDetailViewModel
 @{
     ViewData["Title"] = $"Invoice #{Model.Order.OrderId}";
     decimal subtotal = Model.Order.TotalAmount - Model.Order.DeliveryCharge;
@@ -15,11 +15,11 @@
             <div class="invoiceMeta">
                 <div>
                     <div class="muted">Order date</div>
-                    <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd")</strong>
+                    <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd hh:mm tt")</strong>
                 </div>
                 <div>
                     <div class="muted">Payment</div>
-                    <strong>COD</strong>
+                    <strong>COD <span style=" font-family: monospace;">(Cash on Delivery)</span></strong>
                 </div>
                 <div>
                     <div class="muted">Status</div>
@@ -86,7 +86,7 @@
                         </strong>
                     </div>
                 </div>
-                <div class="invoiceRow" style="font-weight:bold; font-size:1.15em; border-top:2px solid #333; margin-top:8px; padding-top:8px;">
+                <div class="invoiceRow" style="font-weight:bold; font-size:1.15em;  margin-top:8px;  ">
                     <div>Total Amount</div>
                     <div>RS: @Model.Order.TotalAmount.ToString("0.00")</div>
                 </div>
@@ -94,7 +94,86 @@
 
             <div class="invoiceActions noPrint">
                 <button type="button" class="btn btnPrimary" onclick="window.print()">Print Invoice</button>
+
+                <button type="button" class="btn btnPrimary" onclick="downloadPDF()">
+                    Download PDF
+                </button>
             </div>
         </div>
     </div>
 </section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+    const orderId = "@Model.Order.OrderId";
+
+    async function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+
+        let invoice = document.querySelector(".invoicePanel");
+         
+        let noPrintEls = document.querySelectorAll(".noPrint");
+        noPrintEls.forEach(el => el.style.display = "none");
+         
+        invoice.classList.add("pdf-mode");
+
+        const canvas = await html2canvas(invoice, {
+            scale: 2
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const imgWidth = 210;
+        const pageHeight = 295;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        pdf.save("Invoice_" + orderId + ".pdf");
+         
+        noPrintEls.forEach(el => el.style.display = "");
+        invoice.classList.remove("pdf-mode");
+    }
+</script>
+<style>
+    @@media (max-width: 768px){
+        .invoiceActions{
+            display:flex;
+            justify-content:space-between
+
+        }
+
+        .btnPrimary{
+            width:44% !important;
+
+        }
+        .invoiceRow {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+    
+    .pdf-mode,
+    .pdf-mode * {
+        color: #000 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+        .pdf-mode .invoiceRow {
+            border-bottom: 1px solid #000 !important;
+        }
+ </style>

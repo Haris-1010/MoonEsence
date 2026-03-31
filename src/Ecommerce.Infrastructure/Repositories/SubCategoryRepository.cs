@@ -9,25 +9,26 @@ namespace Ecommerce.Infrastructure.Repositories;
 
 public class SubCategoryRepository : ISubCategoryRepository
 {
-    private readonly IDbConnection _connection;
+    private readonly IDbConnectionFactory _connectionFactory;
 
     public SubCategoryRepository(IDbConnectionFactory connectionFactory)
     {
-        _connection = connectionFactory.CreateConnection();
+        _connectionFactory = connectionFactory;
     }
 
     public async Task<IReadOnlyList<SubCategoryDto>> GetActiveByCategoryAsync(int categoryId, CancellationToken cancellationToken = default)
     {
         const string sql = @"
-SELECT Id, CategoryId, Name, Description, IsActive
-FROM SubCategories
-WHERE IsActive = 1 AND CategoryId = @CategoryId
-ORDER BY CreatedAt DESC;";
+SELECT ""Id"", ""CategoryId"", ""Name"", ""Description"", ""IsActive""
+FROM ""SubCategories""
+WHERE ""IsActive"" = TRUE AND ""CategoryId"" = @CategoryId
+ORDER BY ""CreatedAt"" DESC;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        var items = await _connection.QueryAsync<SubCategoryDto>(
+        var items = await conn.QueryAsync<SubCategoryDto>(
             new CommandDefinition(sql, new { CategoryId = categoryId }, cancellationToken: cancellationToken));
 
         return items.ToList();
@@ -36,43 +37,46 @@ ORDER BY CreatedAt DESC;";
     public async Task<IReadOnlyList<SubCategoryDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         const string sql = @"
-SELECT Id, CategoryId, Name, Description, IsActive
-FROM SubCategories
-WHERE IsActive = 1
-ORDER BY CreatedAt DESC;";
+SELECT ""Id"", ""CategoryId"", ""Name"", ""Description"", ""IsActive""
+FROM ""SubCategories""
+WHERE ""IsActive"" = TRUE
+ORDER BY ""CreatedAt"" DESC;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        var items = await _connection.QueryAsync<SubCategoryDto>(new CommandDefinition(sql, cancellationToken: cancellationToken));
+        var items = await conn.QueryAsync<SubCategoryDto>(new CommandDefinition(sql, cancellationToken: cancellationToken));
         return items.ToList();
     }
 
     public async Task<SubCategoryDto?> GetByIdAsync(int subCategoryId, CancellationToken cancellationToken = default)
     {
         const string sql = @"
-SELECT Id, CategoryId, Name, Description, IsActive
-FROM SubCategories
-WHERE Id = @SubCategoryId;";
+SELECT ""Id"", ""CategoryId"", ""Name"", ""Description"", ""IsActive""
+FROM ""SubCategories""
+WHERE ""Id"" = @SubCategoryId;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        return await _connection.QuerySingleOrDefaultAsync<SubCategoryDto>(
+        return await conn.QuerySingleOrDefaultAsync<SubCategoryDto>(
             new CommandDefinition(sql, new { SubCategoryId = subCategoryId }, cancellationToken: cancellationToken));
     }
 
     public async Task<int> CreateAsync(SubCategoryDto subCategory, CancellationToken cancellationToken = default)
     {
         const string sql = @"
-INSERT INTO SubCategories (CategoryId, Name, Description, IsActive, CreatedAt)
-OUTPUT INSERTED.Id
-VALUES (@CategoryId, @Name, @Description, @IsActive, SYSUTCDATETIME());";
+INSERT INTO ""SubCategories"" (""CategoryId"", ""Name"", ""Description"", ""IsActive"", ""CreatedAt"")
+VALUES (@CategoryId, @Name, @Description, @IsActive, NOW())
+RETURNING ""Id"";";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        return await _connection.ExecuteScalarAsync<int>(
+        return await conn.ExecuteScalarAsync<int>(
             new CommandDefinition(
                 sql,
                 new
@@ -88,17 +92,18 @@ VALUES (@CategoryId, @Name, @Description, @IsActive, SYSUTCDATETIME());";
     public async Task UpdateAsync(SubCategoryDto subCategory, CancellationToken cancellationToken = default)
     {
         const string sql = @"
-UPDATE SubCategories
-SET CategoryId = @CategoryId,
-    Name = @Name,
-    Description = @Description,
-    IsActive = @IsActive
-WHERE Id = @Id;";
+UPDATE ""SubCategories""
+SET ""CategoryId"" = @CategoryId,
+    ""Name"" = @Name,
+    ""Description"" = @Description,
+    ""IsActive"" = @IsActive
+WHERE ""Id"" = @Id;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        await _connection.ExecuteAsync(
+        await conn.ExecuteAsync(
             new CommandDefinition(
                 sql,
                 new
@@ -115,17 +120,17 @@ WHERE Id = @Id;";
     public async Task<bool> DeleteAsync(int subCategoryId, CancellationToken cancellationToken = default)
     {
         const string sql = @"
-UPDATE SubCategories
-SET IsActive = 0
-WHERE Id = @SubCategoryId;";
+UPDATE ""SubCategories""
+SET ""IsActive"" = FALSE
+WHERE ""Id"" = @SubCategoryId;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        var rows = await _connection.ExecuteAsync(
+        var rows = await conn.ExecuteAsync(
             new CommandDefinition(sql, new { SubCategoryId = subCategoryId }, cancellationToken: cancellationToken));
 
         return rows > 0;
     }
 }
-

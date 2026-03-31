@@ -21,3 +21,27 @@ D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0
 D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\refint\Ecommerce.Domain.dll
 D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.pdb
 D:\Haris Dev\eCommerceClean\eCommerceClean\src\Ecommerce.Domain\obj\Debug\net8.0\ref\Ecommerce.Domain.dll
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.deps.json
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.dll
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.pdb
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.AssemblyInfoInputs.cache
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.AssemblyInfo.cs
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.csproj.CoreCompileInputs.cache
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.sourcelink.json
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.dll
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\refint\Ecommerce.Domain.dll
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.pdb
+D:\Haris Dev\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\ref\Ecommerce.Domain.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.deps.json
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\bin\Debug\net8.0\Ecommerce.Domain.pdb
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.AssemblyInfoInputs.cache
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.AssemblyInfo.cs
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.csproj.CoreCompileInputs.cache
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.sourcelink.json
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\refint\Ecommerce.Domain.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\Ecommerce.Domain.pdb
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Domain\obj\Debug\net8.0\ref\Ecommerce.Domain.dll

@@ -27,7 +27,7 @@
                     <a class="orderCard" href="/Orders/Details/@o.OrderId?code=@o.AccessCode">
                         <div class="orderCardRow">
                             <strong>Order #@o.OrderId</strong>
-                            <span class="muted">@o.CreatedAt.ToString("yyyy-MM-dd")</span>
+                            <span class="muted">@o.CreatedAt.ToString("yyyy-MM-dd hh:mm tt")</span>
                         </div>
                         <div class="orderCardRow">
                             <span class="muted">Status</span>
@@ -44,3 +44,13 @@
     </div>
 </section>
 
+<style>
+    .orderCardRow {
+        color: white;
+    }
+
+    a {
+        text-decoration: none !important;
+        color: inherit !important;
+    }
+</style>

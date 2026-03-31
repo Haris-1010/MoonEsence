@@ -22,11 +22,15 @@
                 </div>
                 <div class="cartRow">
                     <span>Payment</span>
-                    <strong>COD</strong>
+                    <strong>COD <span style=" font-family: monospace;">(Cash on Delivery)</span></strong>
                 </div>
                 <div class="cartRow">
-                    <span>Placed on</span>
-                    <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd")</strong>
+                    <span>Ordered Date</span>
+                    <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd  ")  </strong>
+                </div>
+                <div class="cartRow">
+                    <span>Ordered Time</span>
+                    <strong>@Model.Order.CreatedAt.ToString("  hh:mm tt")  </strong>
                 </div>
             </div>
 

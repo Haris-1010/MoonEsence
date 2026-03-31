@@ -12,13 +12,16 @@ using Ecommerce.Infrastructure.Storage;
 using Ecommerce.Web.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
+using Npgsql;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add MVC
 builder.Services.AddControllersWithViews();
-
 builder.Services.AddMemoryCache();
 
+// Session
 builder.Services.AddSession(options =>
 {
     options.Cookie.HttpOnly = true;
@@ -26,12 +29,13 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromDays(7);
 });
 
-// For AJAX POSTs (we read the token from a meta tag and send it as a header).
+// CSRF token for AJAX POSTs
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "X-CSRF-TOKEN";
 });
 
+// Authentication & Authorization
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -45,6 +49,7 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+// SignalR
 builder.Services.AddSignalR();
 
 // Application services
@@ -59,10 +64,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 if (string.IsNullOrWhiteSpace(connectionString))
     throw new InvalidOperationException("Missing connection string 'DefaultConnection'.");
 
-builder.Services.AddSingleton<IDbConnectionFactory>(sp => new SqlConnectionFactory(connectionString));
+// PostgreSQL Connection Factory
+builder.Services.AddSingleton<IDbConnectionFactory>(sp => new PostgresConnectionFactory(connectionString));
 builder.Services.AddSingleton<IPasswordHasher, Pbkdf2PasswordHasher>();
 
-// Image storage (Azure Blob if configured, otherwise local wwwroot storage).
+// Blob / Local storage
 var azureConn = builder.Configuration["Azure:BlobConnectionString"];
 var azureContainer = builder.Configuration["Azure:BlobContainerName"];
 if (!string.IsNullOrWhiteSpace(azureConn) && !string.IsNullOrWhiteSpace(azureContainer))
@@ -78,6 +84,7 @@ else
     });
 }
 
+// Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
@@ -89,6 +96,7 @@ builder.Services.AddSingleton<IOrderEventPublisher, OrderEventPublisher>();
 
 var app = builder.Build();
 
+// Error handling
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -101,10 +109,28 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// SignalR hub
 app.MapHub<OrderHub>("/hubs/order");
 
+// MVC routes
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+public class PostgresConnectionFactory : IDbConnectionFactory
+{
+    private readonly string _connectionString;
+
+    public PostgresConnectionFactory(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
+
+    public IDbConnection CreateConnection()
+    {
+        // Do NOT call Open() here. Let callers open and dispose connections per-operation.
+        return new NpgsqlConnection(_connectionString);
+    }
+}

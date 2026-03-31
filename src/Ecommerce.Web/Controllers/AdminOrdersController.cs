@@ -20,7 +20,6 @@ public class AdminOrdersController : Controller
     [HttpGet("/Admin/Orders")]
     public async Task<IActionResult> Index(OrderStatus? status, DateTime? fromUtc, DateTime? toUtc, int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        // MVC will bind enum from query string if provided.
         var vm = new ViewModels.AdminOrdersIndexViewModel
         {
             Status = status,
@@ -48,12 +47,22 @@ public class AdminOrdersController : Controller
     public async Task<IActionResult> UpdateStatus(long orderId, OrderStatus newStatus, CancellationToken cancellationToken = default)
     {
         if (!Enum.IsDefined(typeof(OrderStatus), newStatus))
-            return BadRequest(new { ok = false, error = "Invalid status." });
+        {
+            TempData["OrderStatusError"] = "Invalid status.";
+            var refererIfAny = Request.Headers["Referer"].ToString();
+            return string.IsNullOrWhiteSpace(refererIfAny) ? RedirectToAction(nameof(Index)) : Redirect(refererIfAny);
+        }
 
         var updated = await _orders.UpdateOrderStatusAsync(orderId, newStatus, cancellationToken);
         if (updated is null)
-            return NotFound(new { ok = false, error = "Order not found." });
+        {
+            TempData["OrderStatusError"] = "Order not found.";
+            var refererIfAny = Request.Headers["Referer"].ToString();
+            return string.IsNullOrWhiteSpace(refererIfAny) ? RedirectToAction(nameof(Index)) : Redirect(refererIfAny);
+        }
 
-        return Json(new { ok = true, updated });
+        TempData["OrderStatusSuccess"] = $"Order #{orderId} status updated to {updated.NewStatus}.";
+        var referer = Request.Headers["Referer"].ToString();
+        return string.IsNullOrWhiteSpace(referer) ? RedirectToAction(nameof(Index)) : Redirect(referer);
     }
 }

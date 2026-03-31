@@ -30,9 +30,7 @@
                 </div>
 
                 <div class="productDetailCategory">Category: @Model.Product.CategoryName</div>
-                <div class="productDetailDescription">
-                    @Html.Raw(Model.Product.Description)
-                </div>
+            
 
                 <div class="productDetailActions">
                     <button type="button"
@@ -47,6 +45,9 @@
                             data-qty="1">
                         Buy now
                     </button>
+                </div>
+                <div class="productDetailDescription">
+                    @Html.Raw(Model.Product.Description)
                 </div>
             </div>
         </div>

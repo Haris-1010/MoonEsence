@@ -11,11 +11,11 @@ namespace Ecommerce.Infrastructure.Repositories;
 
 public class OrderRepository : IOrderRepository
 {
-    private readonly IDbConnection _connection;
+    private readonly IDbConnectionFactory _connectionFactory;
 
     public OrderRepository(IDbConnectionFactory connectionFactory)
     {
-        _connection = connectionFactory.CreateConnection();
+        _connectionFactory = connectionFactory;
     }
 
     public async Task<CheckoutResultDto> CreateOrderAsync(
@@ -26,7 +26,7 @@ public class OrderRepository : IOrderRepository
       string addressLine1,
       string? addressLine2,
       string? zipCode,
-      decimal deliveryCharge,                    // ← Received from checkout
+      decimal deliveryCharge,
       IReadOnlyList<CartLineQuantityDto> lines,
       CancellationToken cancellationToken = default)
     {
@@ -39,23 +39,23 @@ public class OrderRepository : IOrderRepository
 
         var accessCode = Guid.NewGuid();
 
-        // Fetch current prices in one round-trip (only active products)
         const string productsSql = @"
 SELECT
-    p.Id AS ProductId,
-    p.Price AS UnitPrice
-FROM Products p
-INNER JOIN SubCategories sc ON sc.Id = p.SubCategoryId
-INNER JOIN Categories c ON c.Id = sc.CategoryId
-WHERE p.IsActive = 1
-  AND sc.IsActive = 1
-  AND c.IsActive = 1
-  AND p.Id IN @ProductIds;";
+    p.""Id"" AS ProductId,
+    p.""Price"" AS UnitPrice
+FROM ""Products"" p
+INNER JOIN ""SubCategories"" sc ON sc.""Id"" = p.""SubCategoryId""
+INNER JOIN ""Categories"" c ON c.""Id"" = sc.""CategoryId""
+WHERE p.""IsActive"" = TRUE
+  AND sc.""IsActive"" = TRUE
+  AND c.""IsActive"" = TRUE
+  AND p.""Id"" = ANY(@ProductIds);";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        var productInfos = (await _connection.QueryAsync<(int ProductId, decimal UnitPrice)>(
+        var productInfos = (await conn.QueryAsync<(int ProductId, decimal UnitPrice)>(
             new CommandDefinition(productsSql, new { ProductIds = productIds }, cancellationToken: cancellationToken))).ToList();
 
         if (productInfos.Count != productIds.Length)
@@ -63,10 +63,9 @@ WHERE p.IsActive = 1
 
         var now = DateTime.UtcNow;
 
-        using var tx = _connection.BeginTransaction();
+        using var tx = conn.BeginTransaction();
         try
         {
-            // Compute subtotal from products
             decimal subtotal = 0m;
             var orderItems = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal LineTotal)>(lines.Count);
 
@@ -85,20 +84,18 @@ WHERE p.IsActive = 1
             if (orderItems.Count == 0)
                 throw new InvalidOperationException("Cart is empty.");
 
-            // Final Total = Subtotal + Delivery Charge
             decimal finalTotal = subtotal + deliveryCharge;
 
-            // Updated INSERT SQL with DeliveryCharge
             const string insertOrderSql = @"
-INSERT INTO Orders 
-    (UserId, Status, PaymentMethod, CreatedAt, UpdatedAt, TotalAmount, DeliveryCharge, 
-     FullName, Phone, Email, City, AddressLine1, AddressLine2, ZipCode, AccessCode)
-OUTPUT INSERTED.Id, INSERTED.AccessCode
-VALUES 
+INSERT INTO ""Orders""
+    (""UserId"", ""Status"", ""PaymentMethod"", ""CreatedAt"", ""UpdatedAt"", ""TotalAmount"", ""DeliveryCharge"",
+     ""FullName"", ""Phone"", ""Email"", ""City"", ""AddressLine1"", ""AddressLine2"", ""ZipCode"", ""AccessCode"")
+VALUES
     (@UserId, @Status, @PaymentMethod, @CreatedAt, @UpdatedAt, @TotalAmount, @DeliveryCharge,
-     @FullName, @Phone, @Email, @City, @AddressLine1, @AddressLine2, @ZipCode, @AccessCode);";
+     @FullName, @Phone, @Email, @City, @AddressLine1, @AddressLine2, @ZipCode, @AccessCode)
+RETURNING ""Id"", ""AccessCode"";";
 
-            var result = await _connection.QuerySingleAsync<(long OrderId, Guid AccessCode)>(
+            var result = await conn.QuerySingleAsync<(long OrderId, Guid AccessCode)>(
                 new CommandDefinition(
                     insertOrderSql,
                     new
@@ -108,8 +105,8 @@ VALUES
                         PaymentMethod = (int)PaymentMethod.Cod,
                         CreatedAt = now,
                         UpdatedAt = now,
-                        TotalAmount = finalTotal,           // ← Final amount (Subtotal + Delivery)
-                        DeliveryCharge = deliveryCharge,    // ← Delivery charge separately saved
+                        TotalAmount = finalTotal,
+                        DeliveryCharge = deliveryCharge,
                         FullName = fullName,
                         Phone = phone,
                         Email = email,
@@ -122,14 +119,13 @@ VALUES
                     transaction: tx,
                     cancellationToken: cancellationToken));
 
-            // Insert Order Items
             const string insertItemSql = @"
-INSERT INTO OrderItems (OrderId, ProductId, Quantity, UnitPrice, LineTotal)
+INSERT INTO ""OrderItems"" (""OrderId"", ""ProductId"", ""Quantity"", ""UnitPrice"", ""LineTotal"")
 VALUES (@OrderId, @ProductId, @Quantity, @UnitPrice, @LineTotal);";
 
             foreach (var item in orderItems)
             {
-                await _connection.ExecuteAsync(new CommandDefinition(
+                await conn.ExecuteAsync(new CommandDefinition(
                     insertItemSql,
                     new
                     {
@@ -153,38 +149,39 @@ VALUES (@OrderId, @ProductId, @Quantity, @UnitPrice, @LineTotal);";
         }
         catch
         {
-            tx.Rollback();
+            try { tx.Rollback(); } catch { }
             throw;
         }
     }
+
     public async Task<PagedResult<OrderSummaryDto>> GetOrderHistoryAsync(int userId, int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var offset = (page - 1) * pageSize;
 
         const string countSql = @"
 SELECT COUNT(1)
-FROM Orders
-WHERE UserId = @UserId;";
+FROM ""Orders""
+WHERE ""UserId"" = @UserId;";
 
         const string sql = @"
 SELECT
-    Id AS OrderId,
-    Status AS Status,
-    CreatedAt,
-    TotalAmount,
-    AccessCode
-FROM Orders
-WHERE UserId = @UserId
-ORDER BY CreatedAt DESC
-OFFSET @Offset ROWS
-FETCH NEXT @PageSize ROWS ONLY;";
+    ""Id"" AS OrderId,
+    ""Status"" AS Status,
+    ""CreatedAt"",
+    ""TotalAmount"",
+    ""AccessCode""
+FROM ""Orders""
+WHERE ""UserId"" = @UserId
+ORDER BY ""CreatedAt"" DESC
+LIMIT @PageSize OFFSET @Offset;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        var totalCount = await _connection.ExecuteScalarAsync<int>(new CommandDefinition(countSql, new { UserId = userId }, cancellationToken: cancellationToken));
+        var totalCount = await conn.ExecuteScalarAsync<int>(new CommandDefinition(countSql, new { UserId = userId }, cancellationToken: cancellationToken));
 
-        var items = await _connection.QueryAsync<OrderSummaryDto>(
+        var items = await conn.QueryAsync<OrderSummaryDto>(
             new CommandDefinition(sql, new { UserId = userId, Offset = offset, PageSize = pageSize }, cancellationToken: cancellationToken));
 
         return new PagedResult<OrderSummaryDto>(items.ToList(), page, pageSize, totalCount);
@@ -196,31 +193,31 @@ FETCH NEXT @PageSize ROWS ONLY;";
 
         const string countSql = @"
 SELECT COUNT(1)
-FROM Orders
-WHERE Email = @EmailOrPhone OR Phone = @EmailOrPhone;";
+FROM ""Orders""
+WHERE ""Email"" = @EmailOrPhone OR ""Phone"" = @EmailOrPhone;";
 
         const string sql = @"
 SELECT
-    Id AS OrderId,
-    Status AS Status,
-    CreatedAt,
-    TotalAmount,
-    AccessCode
-FROM Orders
-WHERE Email = @EmailOrPhone OR Phone = @EmailOrPhone
-ORDER BY CreatedAt DESC
-OFFSET @Offset ROWS
-FETCH NEXT @PageSize ROWS ONLY;";
+    ""Id"" AS OrderId,
+    ""Status"" AS Status,
+    ""CreatedAt"",
+    ""TotalAmount"",
+    ""AccessCode""
+FROM ""Orders""
+WHERE ""Email"" = @EmailOrPhone OR ""Phone"" = @EmailOrPhone
+ORDER BY ""CreatedAt"" DESC
+LIMIT @PageSize OFFSET @Offset;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        var totalCount = await _connection.ExecuteScalarAsync<int>(new CommandDefinition(
+        var totalCount = await conn.ExecuteScalarAsync<int>(new CommandDefinition(
             countSql,
             new { EmailOrPhone = emailOrPhone },
             cancellationToken: cancellationToken));
 
-        var items = await _connection.QueryAsync<OrderSummaryDto>(
+        var items = await conn.QueryAsync<OrderSummaryDto>(
             new CommandDefinition(
                 sql,
                 new { EmailOrPhone = emailOrPhone, Offset = offset, PageSize = pageSize },
@@ -233,45 +230,46 @@ FETCH NEXT @PageSize ROWS ONLY;";
     {
         const string orderSql = @"
 SELECT
-    Id AS OrderId,
-    Status AS Status,
-    PaymentMethod AS PaymentMethod,
-    CreatedAt,
-    TotalAmount,
-    AccessCode,
-    FullName,
-    Phone,
-    Email,
-    City,
-    AddressLine1,
-    AddressLine2,
-    ZipCode
-FROM Orders
-WHERE Id = @OrderId
-  AND UserId = @UserId;";
+    ""Id"" AS OrderId,
+    ""Status"" AS Status,
+    ""PaymentMethod"" AS PaymentMethod,
+    ""CreatedAt"",
+    ""TotalAmount"",
+    ""AccessCode"",
+    ""FullName"",
+    ""Phone"",
+    ""Email"",
+    ""City"",
+    ""AddressLine1"",
+    ""AddressLine2"",
+    ""ZipCode""
+FROM ""Orders""
+WHERE ""Id"" = @OrderId
+  AND ""UserId"" = @UserId;";
 
         const string itemsSql = @"
 SELECT
-    oi.ProductId,
-    p.Name AS ProductName,
-    p.ImageUrl AS ImageUrl,
-    oi.Quantity,
-    oi.UnitPrice,
-    oi.LineTotal
-FROM OrderItems oi
-INNER JOIN Products p ON p.Id = oi.ProductId
-WHERE oi.OrderId = @OrderId
-ORDER BY oi.Id ASC;";
+    oi.""ProductId"",
+    p.""Name"" AS ProductName,
+    p.""ImageUrl"" AS ImageUrl,
+    oi.""Quantity"",
+    oi.""UnitPrice"",
+    oi.""LineTotal""
+FROM ""OrderItems"" oi
+INNER JOIN ""Products"" p ON p.""Id"" = oi.""ProductId""
+WHERE oi.""OrderId"" = @OrderId
+ORDER BY oi.""Id"" ASC;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        var order = await _connection.QuerySingleOrDefaultAsync<OrderDetailDto>(
+        var order = await conn.QuerySingleOrDefaultAsync<OrderDetailDto>(
             new CommandDefinition(orderSql, new { OrderId = orderId, UserId = userId }, cancellationToken: cancellationToken));
         if (order is null)
             return null;
 
-        var items = await _connection.QueryAsync<OrderItemDto>(
+        var items = await conn.QueryAsync<OrderItemDto>(
             new CommandDefinition(itemsSql, new { OrderId = orderId }, cancellationToken: cancellationToken));
 
         order.Items = items.ToList();
@@ -282,45 +280,47 @@ ORDER BY oi.Id ASC;";
     {
         const string orderSql = @"
 SELECT
-    Id AS OrderId,
-    Status AS Status,
-    PaymentMethod AS PaymentMethod,
-    CreatedAt,
-    TotalAmount,
-    AccessCode,
-    FullName,
-    Phone,
-    Email,
-    City,
-    AddressLine1,
-    AddressLine2,
-    ZipCode,DeliveryCharge
-FROM Orders
-WHERE Id = @OrderId
-  AND AccessCode = @AccessCode;";
+    ""Id"" AS OrderId,
+    ""Status"" AS Status,
+    ""PaymentMethod"" AS PaymentMethod,
+    ""CreatedAt"",
+    ""TotalAmount"",
+    ""AccessCode"",
+    ""FullName"",
+    ""Phone"",
+    ""Email"",
+    ""City"",
+    ""AddressLine1"",
+    ""AddressLine2"",
+    ""ZipCode"",
+    ""DeliveryCharge""
+FROM ""Orders""
+WHERE ""Id"" = @OrderId
+  AND ""AccessCode"" = @AccessCode;";
 
         const string itemsSql = @"
 SELECT
-    oi.ProductId,
-    p.Name AS ProductName,
-    p.ImageUrl AS ImageUrl,
-    oi.Quantity,
-    oi.UnitPrice,
-    oi.LineTotal
-FROM OrderItems oi
-INNER JOIN Products p ON p.Id = oi.ProductId
-WHERE oi.OrderId = @OrderId
-ORDER BY oi.Id ASC;";
+    oi.""ProductId"",
+    p.""Name"" AS ProductName,
+    p.""ImageUrl"" AS ImageUrl,
+    oi.""Quantity"",
+    oi.""UnitPrice"",
+    oi.""LineTotal""
+FROM ""OrderItems"" oi
+INNER JOIN ""Products"" p ON p.""Id"" = oi.""ProductId""
+WHERE oi.""OrderId"" = @OrderId
+ORDER BY oi.""Id"" ASC;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        var order = await _connection.QuerySingleOrDefaultAsync<OrderDetailDto>(
+        var order = await conn.QuerySingleOrDefaultAsync<OrderDetailDto>(
             new CommandDefinition(orderSql, new { OrderId = orderId, AccessCode = accessCode }, cancellationToken: cancellationToken));
         if (order is null)
             return null;
 
-        var items = await _connection.QueryAsync<OrderItemDto>(
+        var items = await conn.QueryAsync<OrderItemDto>(
             new CommandDefinition(itemsSql, new { OrderId = orderId }, cancellationToken: cancellationToken));
 
         order.Items = items.ToList();
@@ -331,45 +331,46 @@ ORDER BY oi.Id ASC;";
     {
         const string orderSql = @"
 SELECT
-    Id AS OrderId,
-    Status AS Status,
-    PaymentMethod AS PaymentMethod,
-    CreatedAt,
-    TotalAmount,
-    AccessCode,
-DeliveryCharge,
-    FullName,
-    Phone,
-    Email,
-    City,
-    AddressLine1,
-    AddressLine2,
-    ZipCode
-FROM Orders
-WHERE Id = @OrderId;";
+    ""Id"" AS OrderId,
+    ""Status"" AS Status,
+    ""PaymentMethod"" AS PaymentMethod,
+    ""CreatedAt"",
+    ""TotalAmount"",
+    ""AccessCode"",
+    ""DeliveryCharge"",
+    ""FullName"",
+    ""Phone"",
+    ""Email"",
+    ""City"",
+    ""AddressLine1"",
+    ""AddressLine2"",
+    ""ZipCode""
+FROM ""Orders""
+WHERE ""Id"" = @OrderId;";
 
         const string itemsSql = @"
 SELECT
-    oi.ProductId,
-    p.Name AS ProductName,
-    p.ImageUrl AS ImageUrl,
-    oi.Quantity,
-    oi.UnitPrice,
-    oi.LineTotal
-FROM OrderItems oi
-INNER JOIN Products p ON p.Id = oi.ProductId
-WHERE oi.OrderId = @OrderId
-ORDER BY oi.Id ASC;";
+    oi.""ProductId"",
+    p.""Name"" AS ProductName,
+    p.""ImageUrl"" AS ImageUrl,
+    oi.""Quantity"",
+    oi.""UnitPrice"",
+    oi.""LineTotal""
+FROM ""OrderItems"" oi
+INNER JOIN ""Products"" p ON p.""Id"" = oi.""ProductId""
+WHERE oi.""OrderId"" = @OrderId
+ORDER BY oi.""Id"" ASC;";
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
 
-        var order = await _connection.QuerySingleOrDefaultAsync<OrderDetailDto>(
+        var order = await conn.QuerySingleOrDefaultAsync<OrderDetailDto>(
             new CommandDefinition(orderSql, new { OrderId = orderId }, cancellationToken: cancellationToken));
         if (order is null)
             return null;
 
-        var items = await _connection.QueryAsync<OrderItemDto>(
+        var items = await conn.QueryAsync<OrderItemDto>(
             new CommandDefinition(itemsSql, new { OrderId = orderId }, cancellationToken: cancellationToken));
 
         order.Items = items.ToList();
@@ -377,65 +378,65 @@ ORDER BY oi.Id ASC;";
     }
 
     public async Task<PagedResult<AdminOrderSummaryDto>> GetAdminOrdersAsync(
-        OrderStatus? status,
-        DateTime? fromUtc,
-        DateTime? toUtc,
-        int page,
-        int pageSize,
-        CancellationToken cancellationToken = default)
+      OrderStatus? status,
+      DateTime? fromUtc,
+      DateTime? toUtc,
+      int page,
+      int pageSize,
+      CancellationToken cancellationToken = default)
     {
         var offset = (page - 1) * pageSize;
 
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
-
         const string countSql = @"
 SELECT COUNT(1)
-FROM Orders o
-WHERE (@Status IS NULL OR o.Status = @Status)
-  AND (@FromUtc IS NULL OR o.CreatedAt >= @FromUtc)
-  AND (@ToUtc IS NULL OR o.CreatedAt <= @ToUtc);";
+FROM ""Orders"" o
+WHERE (@Status::int IS NULL OR o.""Status"" = @Status)
+  AND (@FromUtc::timestamp IS NULL OR o.""CreatedAt"" >= @FromUtc)
+  AND (@ToUtc::timestamp IS NULL OR o.""CreatedAt"" <= @ToUtc);";
 
-        if (toUtc.HasValue)
+        DateTime? adjustedToUtc = toUtc;
+        if (adjustedToUtc.HasValue)
         {
-            // Make ToUtc exclusive by adding 1 day
-            toUtc = toUtc.Value.AddDays(1);
+            adjustedToUtc = adjustedToUtc.Value.AddDays(1);
         }
 
         const string sql = @"
 SELECT
-    o.Id AS OrderId,
-    o.UserId AS UserId,
-    o.FullName AS CustomerName,
-    o.Phone AS CustomerPhone,
-    o.Status AS Status,
-    o.CreatedAt,
-    o.TotalAmount
-FROM Orders o
-WHERE (@Status IS NULL OR o.Status = @Status)
-  AND (@FromUtc IS NULL OR o.CreatedAt >= @FromUtc)
-  AND (@ToUtc IS NULL OR o.CreatedAt < @ToUtc)   -- notice < instead of <=
-ORDER BY o.CreatedAt DESC
-OFFSET @Offset ROWS
-FETCH NEXT @PageSize ROWS ONLY;";
+    o.""Id"" AS OrderId,
+    o.""UserId"" AS UserId,
+    o.""FullName"" AS CustomerName,
+    o.""Phone"" AS CustomerPhone,
+    o.""Status"" AS Status,
+    o.""CreatedAt"",
+    o.""TotalAmount""
+FROM ""Orders"" o
+WHERE (@Status::int IS NULL OR o.""Status"" = @Status)
+  AND (@FromUtc::timestamp IS NULL OR o.""CreatedAt"" >= @FromUtc)
+  AND (@ToUtc::timestamp IS NULL OR o.""CreatedAt"" < @ToUtc)
+ORDER BY o.""CreatedAt"" DESC
+LIMIT @PageSize OFFSET @Offset;";
 
-        var totalCount = await _connection.ExecuteScalarAsync<int>(new CommandDefinition(
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
+
+        var totalCount = await conn.ExecuteScalarAsync<int>(new CommandDefinition(
             countSql,
             new
             {
                 Status = status.HasValue ? (int)status.Value : (int?)null,
                 FromUtc = fromUtc,
-                ToUtc = toUtc,
+                ToUtc = adjustedToUtc,
             },
             cancellationToken: cancellationToken));
 
-        var items = await _connection.QueryAsync<AdminOrderSummaryDto>(new CommandDefinition(
+        var items = await conn.QueryAsync<AdminOrderSummaryDto>(new CommandDefinition(
             sql,
             new
             {
                 Status = status.HasValue ? (int)status.Value : (int?)null,
                 FromUtc = fromUtc,
-                ToUtc = toUtc,
+                ToUtc = adjustedToUtc,
                 Offset = offset,
                 PageSize = pageSize
             },
@@ -446,57 +447,56 @@ FETCH NEXT @PageSize ROWS ONLY;";
 
     public async Task<OrderStatusChangedDto?> UpdateOrderStatusAsync(long orderId, OrderStatus newStatus, CancellationToken cancellationToken = default)
     {
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
-
         const string sql = @"
-UPDATE Orders
-SET Status = @NewStatus,
-    UpdatedAt = SYSUTCDATETIME()
-OUTPUT
-    INSERTED.Id AS OrderId,
-    INSERTED.UserId AS UserId,
-    INSERTED.Status AS NewStatus,
-    INSERTED.UpdatedAt AS UpdatedAt,
-    INSERTED.AccessCode AS AccessCode
-WHERE Id = @OrderId;";
+UPDATE ""Orders""
+SET ""Status"" = @NewStatus,
+    ""UpdatedAt"" = NOW()
+WHERE ""Id"" = @OrderId
+RETURNING
+    ""Id"" AS OrderId,
+    ""UserId"" AS UserId,
+    ""Status"" AS NewStatus,
+    ""UpdatedAt"" AS UpdatedAt,
+    ""AccessCode"" AS AccessCode;";
 
-        var dto = await _connection.QuerySingleOrDefaultAsync<OrderStatusChangedDto>(
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
+
+        var dto = await conn.QuerySingleOrDefaultAsync<OrderStatusChangedDto>(
             new CommandDefinition(sql, new { NewStatus = (int)newStatus, OrderId = orderId }, cancellationToken: cancellationToken));
 
-        if (dto is null)
-            return null;
-
-        // Dapper will map int to enum by underlying values if compatible.
         return dto;
     }
 
     public async Task<AdminDashboardDto> GetAdminDashboardAsync(CancellationToken cancellationToken = default)
     {
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
-
         const string sql = @"
 SELECT
-    (SELECT COUNT(1) FROM Products) AS TotalProducts,
-    (SELECT COUNT(1) FROM Categories) AS TotalCategories,
-    (SELECT COUNT(1) FROM Orders) AS TotalOrders,
-    (SELECT COUNT(1) FROM Orders WHERE CreatedAt >= DATEADD(day, DATEDIFF(day, 0, SYSUTCDATETIME()), 0)) AS NewOrdersToday,
-    (SELECT COUNT(1) FROM Orders WHERE Status IN (0, 1, 2)) AS PendingOrders;";
+    (SELECT COUNT(1) FROM ""Products"") AS TotalProducts,
+    (SELECT COUNT(1) FROM ""Categories"") AS TotalCategories,
+    (SELECT COUNT(1) FROM ""Orders"") AS TotalOrders,
+    (SELECT COUNT(1) FROM ""Orders"" WHERE ""CreatedAt"" >= CURRENT_DATE) AS NewOrdersToday,
+    (SELECT COUNT(1) FROM ""Orders"" WHERE ""Status"" IN (0, 1, 2)) AS PendingOrders;";
 
-        return await _connection.QuerySingleAsync<AdminDashboardDto>(new CommandDefinition(sql, cancellationToken: cancellationToken));
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
+
+        return await conn.QuerySingleAsync<AdminDashboardDto>(new CommandDefinition(sql, cancellationToken: cancellationToken));
     }
 
     public async Task<int> GetNewOrdersTodayAsync(CancellationToken cancellationToken = default)
     {
-        if (_connection.State != ConnectionState.Open)
-            _connection.Open();
-
         const string sql = @"
 SELECT COUNT(1)
-FROM Orders
-WHERE CreatedAt >= DATEADD(day, DATEDIFF(day, 0, SYSUTCDATETIME()), 0);";
+FROM ""Orders""
+WHERE ""CreatedAt"" >= CURRENT_DATE;";
 
-        return await _connection.ExecuteScalarAsync<int>(new CommandDefinition(sql, cancellationToken: cancellationToken));
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
+
+        return await conn.ExecuteScalarAsync<int>(new CommandDefinition(sql, cancellationToken: cancellationToken));
     }
 }
