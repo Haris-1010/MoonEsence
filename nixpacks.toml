@@ -1,10 +1,10 @@
 [phases.setup]
-packages = ["dotnet-sdk-8"]
+packages = ["dotnet-sdk_8"]
 
 [phases.install]
 commands = [
     "dotnet --info",
-    "dotnet restore src/Ecommerce.Web/Ecommerce.Web.csproj --no-cache --verbosity detailed"
+    "dotnet restore src/Ecommerce.Web/Ecommerce.Web.csproj --no-cache"
 ]
 
 [phases.build]
