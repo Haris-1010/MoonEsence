@@ -107,8 +107,6 @@ app.Use(async (context, next) =>
     Console.WriteLine($"[RESPONSE] {context.Response.StatusCode} for {context.Request.Path}");
 });
 
-app.MapGet("/", () => Results.Text("🚀 App is live & running on Railway!"));
-// Health check endpoint
 app.MapGet("/health", async (IDbConnectionFactory dbFactory) =>
 {
     Console.WriteLine("Health check endpoint hit!");
