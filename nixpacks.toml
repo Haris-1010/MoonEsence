@@ -1,0 +1,12 @@
+# nixpacks.toml
+[phases.setup]
+packages = ["dotnet-sdk-8"]
+
+[phases.install]
+commands = ["dotnet restore"]
+
+[phases.build]
+commands = ["dotnet publish -c Release -o out"]
+
+[phases.start]
+commands = ["dotnet Ecommerce.Web.dll --urls=http://0.0.0.0:8080"]

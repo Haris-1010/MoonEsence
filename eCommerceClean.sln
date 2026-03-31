@@ -15,6 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Web", "src\Ecomme
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
+		nixpacks.toml = nixpacks.toml
 		railway.json = railway.json
 	EndProjectSection
 EndProject
@@ -85,5 +86,8 @@ Global
 		{CA4ACFD7-9096-423C-8B1A-588CC8B1D0D8} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{6797FE39-A39D-473A-870A-9EC8B90D7114} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{FDA4CCE2-877A-4A45-BE23-CB2BF276C638} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {25D07D89-860A-4629-B6A8-F56D72D95543}
 	EndGlobalSection
 EndGlobal
