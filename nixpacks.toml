@@ -2,7 +2,7 @@
 packages = ["dotnet-sdk-8"]
 
 [phases.install]
-commands = ["dotnet restore"]
+commands = ["dotnet restore eCommerceClean.sln"]
 
 [phases.build]
 commands = ["dotnet publish src/Ecommerce.Web/Ecommerce.Web.csproj -c Release -o out"]
