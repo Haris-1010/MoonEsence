@@ -1,23 +1,20 @@
-# nixpacks.toml - .NET 8 setup for Railway
+# nixpacks.toml - correct setup for .NET 8
 
 [phases.setup]
-# install .NET 8 SDK
+# force .NET 8
 packages = ["dotnet-sdk-8"]
 
 [phases.install]
 commands = [
-    # restore all projects
     "dotnet restore"
 ]
 
 [phases.build]
 commands = [
-    # publish your Web project into /app/out
     "dotnet publish src/Ecommerce.Web/Ecommerce.Web.csproj -c Release -o out"
 ]
 
 [phases.start]
 commands = [
-    # run the published DLL
     "dotnet out/Ecommerce.Web.dll --urls=http://0.0.0.0:8080"
 ]
