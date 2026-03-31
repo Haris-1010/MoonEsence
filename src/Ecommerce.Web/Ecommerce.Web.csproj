@@ -1,25 +1,40 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <ItemGroup>
-    <ProjectReference Include="..\Ecommerce.Application\Ecommerce.Application.csproj" />
-    <ProjectReference Include="..\Ecommerce.Infrastructure\Ecommerce.Infrastructure.csproj" />
-  </ItemGroup>
+	<!-- Project references -->
+	<ItemGroup>
+		<ProjectReference Include="..\Ecommerce.Application\Ecommerce.Application.csproj" />
+		<ProjectReference Include="..\Ecommerce.Infrastructure\Ecommerce.Infrastructure.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.9" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.9" />
-    <PackageReference Include="Npgsql" Version="10.0.2" />
-  </ItemGroup>
+	<!-- NuGet packages -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.9" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.9" />
+		<PackageReference Include="Npgsql" Version="10.0.2" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\images\moon.png" />
-  </ItemGroup>
+	<!-- Static files -->
+	<ItemGroup>
+		<!-- All wwwroot content -->
+		<Content Include="wwwroot\**\*" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<!-- MVC Views -->
+	<ItemGroup>
+		<!-- Include all views -->
+		<Content Include="Views\**\*.cshtml" CopyToOutputDirectory="PreserveNewest" />
+		<!-- Include shared views / partials -->
+		<Content Include="Views\Shared\**\*.cshtml" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<!-- Ensure Razor views are published -->
+		<CopyRazorGenerateFilesToPublishDirectory>true</CopyRazorGenerateFilesToPublishDirectory>
+		<PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+	</PropertyGroup>
 </Project>
