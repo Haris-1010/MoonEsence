@@ -12,6 +12,9 @@ RUN dotnet restore src/Ecommerce.Web/Ecommerce.Web.csproj
 COPY . .
 RUN dotnet publish src/Ecommerce.Web/Ecommerce.Web.csproj -c Release -o out
 
+# List the contents of the Views directory
+RUN ls -R out/Views
+
 # Runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
