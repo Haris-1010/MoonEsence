@@ -16,6 +16,12 @@
 		<None Include="wwwroot\images\moon.png" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Content Update="Views\**\*.*">
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
