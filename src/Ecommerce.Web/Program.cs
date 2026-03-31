@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Ecommerce.Application.Abstractions.Auth;
 using Ecommerce.Application.Abstractions.Events;
 using Ecommerce.Application.Abstractions.Repositories;
@@ -59,10 +59,9 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-// Infrastructure services
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (string.IsNullOrWhiteSpace(connectionString))
-    throw new InvalidOperationException("Missing connection string 'DefaultConnection'.");
+// Get connection string - prioritize Railway's DATABASE_URL
+string connectionString = GetConnectionString(builder);
+Console.WriteLine($"Using database connection: {(connectionString.Contains("password") ? "Connected" : "Not configured")}");
 
 // PostgreSQL Connection Factory
 builder.Services.AddSingleton<IDbConnectionFactory>(sp => new PostgresConnectionFactory(connectionString));
@@ -96,6 +95,28 @@ builder.Services.AddSingleton<IOrderEventPublisher, OrderEventPublisher>();
 
 var app = builder.Build();
 
+// Test database connection on startup
+using (var scope = app.Services.CreateScope())
+{
+    var dbFactory = scope.ServiceProvider.GetRequiredService<IDbConnectionFactory>();
+    try
+    {
+        using var connection = dbFactory.CreateConnection();
+        connection.Open();
+        Console.WriteLine("✅ Database connection successful!");
+
+        // Optional: Test a simple query
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "SELECT 1";
+        cmd.ExecuteScalar();
+        Console.WriteLine("✅ Database query test successful!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Database connection failed: {ex.Message}");
+    }
+}
+
 // Error handling
 if (!app.Environment.IsDevelopment())
 {
@@ -109,15 +130,64 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// SignalR hub
 app.MapHub<OrderHub>("/hubs/order");
 
-// MVC routes
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapGet("/health", async (IDbConnectionFactory dbFactory) =>
+{
+    try
+    {
+        using var connection = dbFactory.CreateConnection();
+        connection.Open();
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "SELECT 1";
+        cmd.ExecuteScalar();
+        return Results.Ok(new { status = "Healthy", database = "Connected", timestamp = DateTime.UtcNow });
+    }
+    catch (Exception ex)
+    {
+        return Results.StatusCode(503);
+    }
+});
+
 app.Run();
+
+string GetConnectionString(WebApplicationBuilder builder)
+{
+    var railwayDbUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+    if (!string.IsNullOrWhiteSpace(railwayDbUrl))
+    {
+        Console.WriteLine("📡 Using Railway DATABASE_URL");
+        try
+        {
+            var uri = new Uri(railwayDbUrl);
+            var userInfo = uri.UserInfo.Split(':');
+            var username = userInfo[0];
+            var password = userInfo[1];
+            var database = uri.AbsolutePath.TrimStart('/');
+            var host = uri.Host;
+            var port = uri.Port > 0 ? uri.Port : 5432;
+
+            return $"Host={host};Port={port};Database={database};Username={username};Password={password};Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;Timeout=30;";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"⚠️ Failed to parse DATABASE_URL: {ex.Message}");
+        }
+    }
+
+    var configConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+    if (!string.IsNullOrWhiteSpace(configConnection))
+    {
+        Console.WriteLine("📝 Using connection string from appsettings.json");
+        return configConnection;
+    }
+
+    throw new InvalidOperationException("Missing connection string 'DefaultConnection' or 'DATABASE_URL' environment variable.");
+}
 
 public class PostgresConnectionFactory : IDbConnectionFactory
 {
@@ -130,7 +200,6 @@ public class PostgresConnectionFactory : IDbConnectionFactory
 
     public IDbConnection CreateConnection()
     {
-        // Do NOT call Open() here. Let callers open and dispose connections per-operation.
         return new NpgsqlConnection(_connectionString);
     }
 }
