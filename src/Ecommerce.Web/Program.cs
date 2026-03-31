@@ -153,7 +153,7 @@ app.MapGet("/test-db", async (IDbConnectionFactory dbFactory) =>
         return Results.Json(new { success = false, error = ex.Message });
     }
 });
-
+app.MapGet("/", () => Results.Ok("Root is reachable"));
 // Test database connection on startup
 using (var scope = app.Services.CreateScope())
 {
