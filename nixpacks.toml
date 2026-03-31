@@ -2,13 +2,16 @@
 packages = ["dotnet-sdk-8"]
 
 [phases.install]
-commands = ["dotnet restore eCommerceClean.sln"]
+commands = [
+    "dotnet --info",
+    "dotnet restore src/Ecommerce.Web/Ecommerce.Web.csproj --no-cache --verbosity detailed"
+]
 
 [phases.build]
-commands = ["dotnet publish src/Ecommerce.Web/Ecommerce.Web.csproj -c Release -o out"]
+commands = [
+    "dotnet build src/Ecommerce.Web/Ecommerce.Web.csproj -c Release --no-restore",
+    "dotnet publish src/Ecommerce.Web/Ecommerce.Web.csproj -c Release -o out --no-build"
+]
 
 [start]
 cmd = "dotnet out/Ecommerce.Web.dll"
-
-[variables]
-ASPNETCORE_URLS = "http://0.0.0.0:8080"
