@@ -106,7 +106,7 @@ app.Use(async (context, next) =>
     await next();
     Console.WriteLine($"[RESPONSE] {context.Response.StatusCode} for {context.Request.Path}");
 });
-
+app.MapGet("/", () => Results.Text("🚀 App is running on Railway!"));
 // Health check endpoint
 app.MapGet("/health", async (IDbConnectionFactory dbFactory) =>
 {
@@ -153,7 +153,6 @@ app.MapGet("/test-db", async (IDbConnectionFactory dbFactory) =>
         return Results.Json(new { success = false, error = ex.Message });
     }
 });
-app.MapGet("/", () => Results.Ok("Root is reachable"));
 // Test database connection on startup
 using (var scope = app.Services.CreateScope())
 {
