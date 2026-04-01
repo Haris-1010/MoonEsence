@@ -89,4 +89,21 @@ RETURNING ""Id"";";
             },
             cancellationToken: cancellationToken));
     }
+
+    public async Task<IReadOnlyList<User>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        const string sql = @"
+SELECT
+    ""Id"", ""Username"", ""Email"", ""Role"", ""CreatedAt""
+FROM ""Users""
+ORDER BY ""CreatedAt"" DESC;";
+
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != System.Data.ConnectionState.Open)
+            conn.Open();
+
+        var users = await conn.QueryAsync<User>(
+            new CommandDefinition(sql, cancellationToken: cancellationToken));
+        return users.ToList();
+    }
 }

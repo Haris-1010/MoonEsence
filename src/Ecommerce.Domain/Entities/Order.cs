@@ -16,7 +16,6 @@ public class Order
 
     public Guid AccessCode { get; set; }
 
-    // Simple checkout fields (extend if needed)
     public string? FullName { get; set; }
     public string? Phone { get; set; }
     public string? Email { get; set; }
@@ -28,4 +27,3 @@ public class Order
 
     public List<OrderItem> Items { get; set; } = [];
 }
-

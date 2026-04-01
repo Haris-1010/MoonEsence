@@ -5,6 +5,7 @@ using Ecommerce.Application.Abstractions.Repositories;
 using Ecommerce.Application.DTOs;
 using Ecommerce.Application.Shared;
 using Ecommerce.Domain.Enums;
+using Ecommerce.Domain.Entities;
 using Ecommerce.Infrastructure.Database;
 
 namespace Ecommerce.Infrastructure.Repositories;
@@ -498,5 +499,30 @@ WHERE ""CreatedAt"" >= CURRENT_DATE;";
             conn.Open();
 
         return await conn.ExecuteScalarAsync<int>(new CommandDefinition(sql, cancellationToken: cancellationToken));
+    }
+
+    public async Task<IReadOnlyList<Order>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        const string sql = @"
+SELECT
+    ""Id"" ,
+    ""UserId"",
+    ""FullName"",
+    ""Phone"",
+    ""Email"",
+    ""City"",
+    ""Status"",
+    ""CreatedAt"",
+    ""TotalAmount""
+FROM ""Orders""
+ORDER BY ""CreatedAt"" DESC;";
+
+        using var conn = _connectionFactory.CreateConnection();
+        if (conn.State != System.Data.ConnectionState.Open)
+            conn.Open();
+
+        var orders = await conn.QueryAsync<Order>(
+            new CommandDefinition(sql, cancellationToken: cancellationToken));
+        return orders.ToList();
     }
 }

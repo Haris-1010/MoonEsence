@@ -1,0 +1,608 @@
+@model List<Ecommerce.Web.ViewModels.OrderListViewModel>
+@{
+    ViewData["Title"] = "All Orders";
+}
+
+<div class="orders-container">
+    <div class="orders-header">
+        <div class="header-content">
+            <div class="title-section">
+                <div class="icon-wrapper">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div>
+                    <h2>Order Management</h2>
+                    <p class="subtitle">View and manage all customer orders</p>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stat-item">
+                    <span class="stat-value">@Model.Count</span>
+                    <span class="stat-label">Total Orders</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value">@Model.Sum(o => o.TotalAmount).ToString("0.00")</span>
+                    <span class="stat-label">Total Revenue</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value">@Model.Average(o => o.TotalAmount).ToString("0.00")</span>
+                    <span class="stat-label">Avg. Order</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <div class="table-controls">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search orders by ID, phone, email or city..." class="search-input">
+            </div>
+            <div class="date-filter">
+                <i class="fas fa-calendar-alt"></i>
+                <input type="date" id="dateFilter" class="date-input" placeholder="Filter by date">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="order-table" id="orderTable">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Customer Name</th>
+                        <th>Customer Phone</th>
+                        <th>Email</th>
+                        <th>Date & Time</th>
+                        <th>Price</th>
+                        <th>City</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var o in Model)
+                    {
+                        <tr data-date="@o.CreatedAt.ToString("yyyy-MM-dd")">
+                            <td>
+                                <div class="order-id">
+                                    <i class="fas fa-hashtag"></i>
+                                    <span class="order-number">@o.OrderId</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="phone-info">
+                                    <i class="fas fa-phone-alt"></i>
+                                    @o.CustomerName
+                                </div>
+                            </td>
+                            <td>
+                                <div class="phone-info">
+                                    <i class="fas fa-phone-alt"></i>
+                                    @o.CustomerPhone
+                                </div>
+                            </td>
+                            <td>
+                                <a href="mailto:@o.CustomerEmail" class="email-link">
+                                    <i class="fas fa-envelope"></i>
+                                    @o.CustomerEmail
+                                </a>
+                            </td>
+                            <td>
+                                <div class="date-time-info">
+                                    <i class="fas fa-calendar-day"></i>
+                                    @{
+                                        // Format date as 30/11/2025 8:27 pm
+                                        var dateTime = o.CreatedAt;
+                                        var formattedDate = dateTime.ToString("dd/MM/yyyy");
+                                        var formattedTime = dateTime.ToString("h:mm tt").ToLower();
+                                        <span>@formattedDate @formattedTime</span>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div class="price-info">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <span class="price-amount">@o.TotalAmount.ToString("0.00")</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="city-info">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    @o.City
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .orders-container {
+        background: #0a0a0a;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .orders-header {
+        max-width: 1400px;
+        margin: 0 auto 2rem auto;
+    }
+
+    .header-content {
+        background: #1a1a1a;
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .title-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .icon-wrapper {
+        width: 50px;
+        height: 50px;
+        background: #2a2a2a;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+        .icon-wrapper i {
+            font-size: 24px;
+            color: #d4af37;
+        }
+
+    .title-section h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .subtitle {
+        color: #888888;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .stats-card {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        background: #0f0f0f;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        border: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #d4af37;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: #888888;
+    }
+
+    .stat-divider {
+        width: 1px;
+        height: 30px;
+        background: rgba(212, 175, 55, 0.2);
+    }
+
+    .table-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: #111111;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .table-controls {
+        padding: 1.5rem;
+        background: #0c0c0c;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 350px;
+    }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666666;
+        }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        background: #1a1a1a;
+        color: #ffffff;
+    }
+
+        .search-input::placeholder {
+            color: #666666;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            background: #1f1f1f;
+        }
+
+    .date-filter {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+        .date-filter i {
+            position: absolute;
+            left: 1rem;
+            color: #d4af37;
+            z-index: 1;
+        }
+
+    .date-input {
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 0.9rem;
+        background: #1a1a1a;
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .date-input:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .date-input::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+    .table-responsive {
+        overflow-x: auto;
+        background: transparent;
+    }
+
+    .order-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .order-table thead {
+            background: #0f0f0f;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .order-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #d4af37;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .order-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+            color: #e0e0e0;
+        }
+
+        .order-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+            .order-table tbody tr:hover {
+                background: rgba(212, 175, 55, 0.05);
+                transform: scale(1.01);
+            }
+
+    .order-id {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .order-id i {
+            color: #d4af37;
+            font-size: 0.9rem;
+        }
+
+    .order-number {
+        font-weight: 600;
+        color: #ffffff;
+        font-family: monospace;
+        font-size: 1rem;
+    }
+
+    .phone-info, .city-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #aaaaaa;
+        font-size: 0.9rem;
+    }
+
+        .phone-info i, .city-info i {
+            color: #666666;
+        }
+
+    .email-link {
+        color: #aaaaaa;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: color 0.3s ease;
+    }
+
+        .email-link:hover {
+            color: #d4af37;
+        }
+
+    .date-time-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #aaaaaa;
+        font-size: 0.9rem;
+    }
+
+        .date-time-info i {
+            color: #d4af37;
+        }
+
+    .price-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .price-info i {
+            color: #d4af37;
+            font-size: 0.9rem;
+        }
+
+    .price-amount {
+        font-weight: 600;
+        color: #ffffff;
+        font-size: 1rem;
+    }
+
+    /* Mobile Responsive */
+    @@media (max-width: 768px) {
+        .orders-container
+
+    {
+        padding: 1rem;
+    }
+
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .title-section {
+        flex-direction: column;
+        text-align: center;
+    }
+
+        .title-section h2 {
+            font-size: 1.5rem;
+        }
+
+    .stats-card {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .table-controls {
+        flex-direction: column;
+    }
+
+    .search-box {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .date-filter {
+        width: 100%;
+    }
+
+    .date-input {
+        width: 100%;
+    }
+
+    .order-table thead {
+        display: none;
+    }
+
+    .order-table tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1rem;
+        position: relative;
+        background: #0f0f0f;
+    }
+
+    .order-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border: none;
+    }
+
+        .order-table td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #d4af37;
+            margin-right: 1rem;
+        }
+
+    .order-id, .phone-info, .email-link, .date-time-info, .price-info, .city-info {
+        justify-content: flex-end;
+    }
+
+    }
+
+    /* Tablet Responsive */
+    @@media (min-width: 769px) and (max-width: 1024px) {
+        .orders-container
+
+    {
+        padding: 1.5rem;
+    }
+
+    .order-table th,
+    .order-table td {
+        padding: 0.75rem;
+    }
+
+    }
+
+    /* Animation */
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .orders-container {
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .order-table tbody tr {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #1a1a1a;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #3a3a3a;
+        border-radius: 10px;
+    }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4af37;
+        }
+</style>
+
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
+<script>
+    // Add data-labels for mobile responsiveness
+    document.addEventListener('DOMContentLoaded', function () {
+        var headers = Array.from(document.querySelectorAll('.order-table thead th')).map(th => th.innerText);
+        document.querySelectorAll('.order-table tbody tr').forEach(function (row) {
+            row.querySelectorAll('td').forEach(function (td, i) {
+                td.setAttribute('data-label', headers[i]);
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const dateFilter = document.getElementById('dateFilter');
+
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedDate = dateFilter.value;
+            const rows = document.querySelectorAll('.order-table tbody tr');
+
+            rows.forEach(row => {
+                const orderId = row.querySelector('.order-number')?.innerText.toLowerCase() || '';
+                const phone = row.querySelector('.phone-info')?.innerText.toLowerCase() || '';
+                const email = row.querySelector('.email-link')?.innerText.toLowerCase() || '';
+                const city = row.querySelector('.city-info')?.innerText.toLowerCase() || '';
+                const rowDate = row.getAttribute('data-date');
+
+                const matchesSearch = orderId.includes(searchTerm) ||
+                                    phone.includes(searchTerm) ||
+                                    email.includes(searchTerm) ||
+                                    city.includes(searchTerm);
+                const matchesDate = !selectedDate || rowDate === selectedDate;
+
+                if (matchesSearch && matchesDate) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', filterTable);
+        dateFilter.addEventListener('change', filterTable);
+    });
+</script>

@@ -1,0 +1,610 @@
+@model List<Ecommerce.Web.ViewModels.UserViewModel>
+@{
+    ViewData["Title"] = "All Users";
+}
+
+<div class="users-container">
+    <div class="users-header">
+        <div class="header-content">
+            <div class="title-section">
+                <div class="icon-wrapper">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <h2>User Management</h2>
+                    <p class="subtitle">View all registered users</p>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stat-item">
+                    <span class="stat-value">@Model.Count</span>
+                    <span class="stat-label">Total Users</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value">@Model.Count(u => u.Role == "Admin")</span>
+                    <span class="stat-label">Admins</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value">@Model.Count(u => u.Role == "Client")</span>
+                    <span class="stat-label">Clients</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <div class="table-controls">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search users..." class="search-input">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="Admin">Admins</button>
+                <button class="filter-btn" data-filter="Client">Clients</button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="user-table" id="userTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                     
+                        <th>Role</th>
+                        <th>Registered</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr data-role="@user.Role">
+                            <td>@user.Id</td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        @user.Username.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <span class="username">@user.Username</span>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="mailto:@user.Email" class="email-link">
+                                    <i class="fas fa-envelope"></i>
+                                    @user.Email
+                                </a>
+                            </td>
+                          
+                            <td>
+                                <span class="role-badge @(user.Role == "Admin" ? "role-admin" : "role-client")">
+                                    @if (user.Role == "Admin")
+                                    {
+                                        <i class="fas fa-crown"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user"></i>
+                                    }
+                                    @user.Role
+                                </span>
+                            </td>
+                            <td>
+                                <div class="date-info">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    @user.CreatedAt.ToString("MMM dd, yyyy")
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .users-container {
+        background: #0a0a0a;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .users-header {
+        max-width: 1400px;
+        margin: 0 auto 2rem auto;
+    }
+
+    .header-content {
+        background: #1a1a1a;
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 215, 0, 0.15);
+    }
+
+    .title-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .icon-wrapper {
+        width: 50px;
+        height: 50px;
+        background: #2a2a2a;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+        .icon-wrapper i {
+            font-size: 24px;
+            color: #d4af37;
+        }
+
+    .title-section h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .subtitle {
+        color: #888888;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .stats-card {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        background: #0f0f0f;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 215, 0, 0.15);
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #d4af37;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: #888888;
+    }
+
+    .stat-divider {
+        width: 1px;
+        height: 30px;
+        background: rgba(255, 215, 0, 0.2);
+    }
+
+    .table-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: #111111;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .table-controls {
+        padding: 1.5rem;
+        background: #0c0c0c;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 300px;
+    }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666666;
+        }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        background: #1a1a1a;
+        color: #ffffff;
+    }
+
+        .search-input::placeholder {
+            color: #666666;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            background: #1f1f1f;
+        }
+
+    .filter-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .filter-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: #1a1a1a;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        color: #cccccc;
+    }
+
+        .filter-btn:hover {
+            background: #252525;
+            border-color: #d4af37;
+        }
+
+        .filter-btn.active {
+            background: #d4af37;
+            color: #0a0a0a;
+            border-color: #d4af37;
+            font-weight: 500;
+        }
+
+    .table-responsive {
+        overflow-x: auto;
+        background: transparent;
+    }
+
+    .user-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .user-table thead {
+            background: #0f0f0f;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .user-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #d4af37;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .user-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+            color: #e0e0e0;
+        }
+
+        .user-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+            .user-table tbody tr:hover {
+                background: rgba(212, 175, 55, 0.05);
+                transform: scale(1.01);
+            }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        background: #2a2a2a;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #d4af37;
+        font-weight: bold;
+        font-size: 0.9rem;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .username {
+        font-weight: 500;
+        color: #ffffff;
+    }
+
+    .email-link {
+        color: #aaaaaa;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: color 0.3s ease;
+    }
+
+        .email-link:hover {
+            color: #d4af37;
+        }
+
+    .phone-info, .city-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #aaaaaa;
+        font-size: 0.9rem;
+    }
+
+        .phone-info i, .city-info i {
+            color: #666666;
+        }
+
+    .role-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .role-admin {
+        background: rgba(212, 175, 55, 0.15);
+        color: #d4af37;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .role-client {
+        background: rgba(100, 100, 100, 0.15);
+        color: #cccccc;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .date-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #888888;
+        font-size: 0.9rem;
+    }
+
+    /* Mobile Responsive */
+    @@media (max-width: 768px) {
+        .users-container
+
+    {
+        padding: 1rem;
+    }
+
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .title-section {
+        flex-direction: column;
+        text-align: center;
+    }
+
+        .title-section h2 {
+            font-size: 1.5rem;
+        }
+
+    .stats-card {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .table-controls {
+        flex-direction: column;
+    }
+
+    .search-box {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .filter-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .user-table thead {
+        display: none;
+    }
+
+    .user-table tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1rem;
+        position: relative;
+        background: #0f0f0f;
+    }
+
+    .user-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border: none;
+    }
+
+        .user-table td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #d4af37;
+            margin-right: 1rem;
+        }
+
+    .user-info {
+        flex: 1;
+        justify-content: flex-end;
+    }
+
+    .email-link, .phone-info, .city-info, .date-info {
+        justify-content: flex-end;
+    }
+
+    }
+
+    /* Tablet Responsive */
+    @@media (min-width: 769px) and (max-width: 1024px) {
+        .users-container
+
+    {
+        padding: 1.5rem;
+    }
+
+    .user-table th,
+    .user-table td {
+        padding: 0.75rem;
+    }
+
+    .email-link, .phone-info, .city-info {
+        font-size: 0.85rem;
+    }
+
+    }
+
+    /* Animation */
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .users-container {
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .user-table tbody tr {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #1a1a1a;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #3a3a3a;
+        border-radius: 10px;
+    }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4af37;
+        }
+</style>
+
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
+<script>
+    // Add data-labels for mobile responsiveness
+    document.addEventListener('DOMContentLoaded', function () {
+        var headers = Array.from(document.querySelectorAll('.user-table thead th')).map(th => th.innerText);
+        document.querySelectorAll('.user-table tbody tr').forEach(function (row) {
+            row.querySelectorAll('td').forEach(function (td, i) {
+                td.setAttribute('data-label', headers[i]);
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        let currentFilter = 'all';
+
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const rows = document.querySelectorAll('.user-table tbody tr');
+
+            rows.forEach(row => {
+                const username = row.querySelector('.username')?.innerText.toLowerCase() || '';
+                const email = row.querySelector('.email-link')?.innerText.toLowerCase() || '';
+                const phone = row.querySelector('.phone-info')?.innerText.toLowerCase() || '';
+                const city = row.querySelector('.city-info')?.innerText.toLowerCase() || '';
+                const role = row.getAttribute('data-role');
+
+                const matchesSearch = username.includes(searchTerm) ||
+                                    email.includes(searchTerm) ||
+                                    phone.includes(searchTerm) ||
+                                    city.includes(searchTerm);
+                const matchesFilter = currentFilter === 'all' || role === currentFilter;
+
+                if (matchesSearch && matchesFilter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', filterTable);
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.getAttribute('data-filter');
+                filterTable();
+            });
+        });
+    });
+</script>

@@ -1,6 +1,7 @@
 using Ecommerce.Application.DTOs;
 using Ecommerce.Application.Shared;
 using Ecommerce.Domain.Enums;
+using Ecommerce.Domain.Entities;
 
 namespace Ecommerce.Application.Abstractions.Repositories;
 
@@ -38,5 +39,6 @@ public interface IOrderRepository
 
     Task<AdminDashboardDto> GetAdminDashboardAsync(CancellationToken cancellationToken = default);
     Task<int> GetNewOrdersTodayAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Order>> GetAllAsync(CancellationToken cancellationToken = default);
 }
 
