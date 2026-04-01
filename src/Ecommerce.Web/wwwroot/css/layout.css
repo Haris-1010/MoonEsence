@@ -821,7 +821,13 @@
   color: rgba(255,255,255,0.85);
   margin-top: 8px;
 }
-.promo-actions { margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap; }
+.promo-actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
 
 /* Media area */
 .promo-media img {
