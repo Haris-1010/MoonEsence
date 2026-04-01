@@ -31,24 +31,23 @@
                     <strong>@Model.Order.CreatedAt.ToString("  hh:mm tt")  </strong>
                 </div>
             </div>
-
-            <!-- Delivery Breakdown -->
-            <div class="cartTotals" style="margin: 20px 0; padding: 12px; border-radius: 8px;">
-                <div class="cartRow">
-                    <span>Subtotal (Items)</span>
-                    <strong>RS: @subtotal.ToString("0.00")</strong>
-                </div>
-                <div class="cartRow">
-                    <span>Delivery Charges</span>
-                    <strong style="color: @(Model.Order.DeliveryCharge == 0 ? "#28a745" : "white")">
-                        @(Model.Order.DeliveryCharge == 0 ? "FREE" : $"RS: {Model.Order.DeliveryCharge.ToString("0.00")}")
-                    </strong>
-                </div>
-                <div class="cartRow" style="font-size: 1.15em; font-weight: bold; border-top: 2px solid #374151; padding-top: 10px; margin-top: 8px;">
-                    <span>Total Amount</span>
-                    <strong>RS: @Model.Order.TotalAmount.ToString("0.00")</strong>
-                </div>
+            <h2 class="panelTitle" style="margin-top:18px;">Items</h2>
+            <div class="cartItems" style="padding:0;gap:10px;">
+                @foreach (var item in Model.Order.Items)
+                {
+                    <div class="cartItem" style="grid-template-columns:72px 1fr;">
+                        <img src="@item.ImageUrl" alt="@item.ProductName" />
+                        <div>
+                            <p class="cartItemTitle">@item.ProductName</p>
+                            <div class="cartItemMeta">@item.Quantity x RS: @item.UnitPrice.ToString("0.00")</div>
+                            <div class="cartItemMeta" style="margin-top:6px;color:var(--text);font-weight:800;">
+                                RS: @item.LineTotal.ToString("0.00")
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
+          
 
             <!-- Customer Information -->
             <div class="panel" style="margin-top:12px;">
@@ -72,43 +71,31 @@
                     </strong>
                 </div>
             </div>
-
+            <!-- Delivery Breakdown -->
+            <div class="cartTotals" style="margin: 20px 0; padding: 12px; border-radius: 8px;">
+                <div class="cartRow">
+                    <span>Subtotal (Items)</span>
+                    <strong>RS: @subtotal.ToString("0.00")</strong>
+                </div>
+                <div class="cartRow">
+                    <span>Delivery Charges</span>
+                    <strong style="color: @(Model.Order.DeliveryCharge == 0 ? "#28a745" : "white")">
+                        @(Model.Order.DeliveryCharge == 0 ? "FREE" : $"RS: {Model.Order.DeliveryCharge.ToString("0.00")}")
+                    </strong>
+                </div>
+                <div class="cartRow" style="font-size: 1.15em; font-weight: bold; border-top: 2px solid #374151; padding-top: 10px; margin-top: 8px;">
+                    <span>Total Amount</span>
+                    <strong>RS: @Model.Order.TotalAmount.ToString("0.00")</strong>
+                </div>
+            </div>
             <div class="invoiceActions noPrint" style="margin-top:12px;">
                 <a class="btn btnPrimary" href="/Orders/Invoice/@Model.Order.OrderId?code=@Model.Order.AccessCode">Print invoice</a>
             </div>
         </div>
 
-        <h2 class="panelTitle" style="margin-top:18px;">Items</h2>
-        <div class="cartItems" style="padding:0;gap:10px;">
-            @foreach (var item in Model.Order.Items)
-            {
-                <div class="cartItem" style="grid-template-columns:72px 1fr;">
-                    <img src="@item.ImageUrl" alt="@item.ProductName" />
-                    <div>
-                        <p class="cartItemTitle">@item.ProductName</p>
-                        <div class="cartItemMeta">@item.Quantity x RS: @item.UnitPrice.ToString("0.00")</div>
-                        <div class="cartItemMeta" style="margin-top:6px;color:var(--text);font-weight:800;">
-                            RS: @item.LineTotal.ToString("0.00")
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+      
 
-        <!-- Optional: Add order timeline for better tracking -->
-        <div class="panel" style="margin-top: 20px;">
-            <h2 class="panelTitle" style="margin-bottom:10px;">Order Timeline</h2>
-            <div class="orderTimeline">
-                <div class="timelineItem">
-                    <div class="timelineIcon">📦</div>
-                    <div class="timelineContent">
-                        <strong>Order Placed</strong>
-                        <span class="timelineDate">@Model.Order.CreatedAt.ToString("yyyy-MM-dd hh:mm tt") UTC</span>
-                    </div>
-                </div>
-               
-            </div>
-        </div>
+       
     </div>
 </section>
 

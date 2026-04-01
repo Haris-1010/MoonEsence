@@ -55,7 +55,7 @@ public class OrderService : IOrderService
                 result.OrderId,
                 null,
                 result.AccessCode,
-                cartSummary.Subtotal,
+                cartSummary.FinalTotal,
                 DateTime.UtcNow,
                 OrderStatus.Placed),
             cancellationToken);

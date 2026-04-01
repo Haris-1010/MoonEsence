@@ -1,4 +1,4 @@
-@model Ecommerce.Web.ViewModels.ProductDetailViewModel
+﻿@model Ecommerce.Web.ViewModels.ProductDetailViewModel
 @{
     ViewData["Title"] = Model.Product.Name;
 }
@@ -71,7 +71,18 @@
             font-size: 14px;
             transition: all 0.3s ease;
         }
+        .productDetail{
 
+            display:flex;
+        }
+
+    .productDetailMedia{
+        width:50%;
+    }
+
+    .productDetailInfo {
+        width:50%;
+    }
         .productDetailActions .btnPrimary {
             background: rgba(34, 197, 94, 0.18);
             border-color: rgba(34, 197, 94, 0.55);
@@ -119,6 +130,17 @@
         margin-top: 14px;
     }
 
+        .productDetail {
+            display: grid;
+        }
+
+        .productDetailMedia {
+            width: 100%;
+        }
+
+        .productDetailInfo {
+            width: 100%;
+        }
     .productDetailActions .btn {
         padding: 8px 10px;
         font-size: 12px;

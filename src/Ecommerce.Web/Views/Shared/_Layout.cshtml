@@ -14,8 +14,7 @@
     <meta name="csrf-token" content="@csrf.RequestToken" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="~/css/ecommerce.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" /> 
 
     <style>
         .cartIcon::before {
@@ -163,8 +162,8 @@
     </div>
      
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    @await Html.PartialAsync("~/Views/Shared/_ValidationScriptsPartial.cshtml")
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    @await Html.PartialAsync("~/Views/Shared/_ValidationScriptsPartial.cshtml") 
+	<script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/js/app.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
      

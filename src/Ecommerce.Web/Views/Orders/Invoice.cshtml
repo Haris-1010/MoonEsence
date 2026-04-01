@@ -8,44 +8,63 @@
     <div class="container">
         <div class="pageHeader">
             <h1 class="pageTitle">Invoice #@Model.Order.OrderId</h1>
-            <p class="pageSubtitle">Print-ready COD invoice</p>
+            <p class="pageSubtitle"> COD invoice</p>
         </div>
 
         <div class="panel invoicePanel">
-            <div class="invoiceMeta">
-                <div>
-                    <div class="muted">Order date</div>
+            <div class="invoiceMeta" >
+                <div style="display:flex;justify-content:space-between">
+                    <div class="label">Order date</div>
                     <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd hh:mm tt")</strong>
                 </div>
-                <div>
-                    <div class="muted">Payment</div>
+                <div style="display:flex;justify-content:space-between">
+                    <div class="label">Payment</div>
                     <strong>COD <span style=" font-family: monospace;">(Cash on Delivery)</span></strong>
-                </div>
-                <div>
-                    <div class="muted">Status</div>
+                </div >
+                <div style="display:flex;justify-content:space-between">
+                    <div class="label">Status</div>
                     <strong>@Model.Order.Status</strong>
                 </div>
             </div>
+            <div class="invoiceCustomerCard">
+                <div class="cardHeader">
+                    <span>Customer Details</span>
+                </div>
 
-            <div class="invoiceCustomer">
-                <div class="muted">Customer</div>
-                <strong>@Model.Order.FullName</strong>
-                <div class="muted">Phone: @Model.Order.Phone</div>
-                @if (!string.IsNullOrWhiteSpace(Model.Order.Email))
-                {
-                    <div class="muted">Email: @Model.Order.Email</div>
-                }
-                <div class="muted" style="margin-top:8px;">
-                    Address: @Model.Order.AddressLine1
-                    @if (!string.IsNullOrWhiteSpace(Model.Order.AddressLine2))
+                <div class="cardBody">
+                    <div class="rowItem">
+                        <span class="label">Name</span>
+                        <span class="value">@Model.Order.FullName</span>
+                    </div>
+
+                    <div class="rowItem">
+                        <span class="label">Phone</span>
+                        <span class="value">@Model.Order.Phone</span>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Order.Email))
                     {
-                        <text>, @Model.Order.AddressLine2</text>
+                        <div class="rowItem">
+                            <span class="label">Email</span>
+                            <span class="value">@Model.Order.Email</span>
+                        </div>
                     }
-                    <br />
-                    @Model.Order.City - @Model.Order.ZipCode
+
+                    <div class="rowItem address">
+                        <span class="label">Address</span>
+                        <span class="value">
+                            @Model.Order.AddressLine1
+                            @if (!string.IsNullOrWhiteSpace(Model.Order.AddressLine2))
+                            {
+                                <text>, @Model.Order.AddressLine2</text>
+                            }
+                            <br />
+                            @Model.Order.City - @Model.Order.ZipCode
+                        </span>
+                    </div>
                 </div>
             </div>
-
+            <br />
             <div class="invoiceTable">
                 <div class="invoiceRow invoiceHeader">
                     <div>Item</div>
@@ -165,7 +184,54 @@
             justify-content: space-between;
         }
     }
-    
+
+    .invoiceCustomerCard {
+        background: #13171E;
+        border-radius: 12px; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+         
+        margin-top: 10px;
+    }
+
+    .cardHeader {
+        font-size: 15px;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 12px; 
+        padding-bottom: 6px;
+        letter-spacing: 0.5px;
+    }
+
+    .cardBody {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .rowItem {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 10px;
+    }
+
+    .label {
+        font-size: 14px;
+        color:  White;
+        min-width: 80px;
+    }
+
+    .value {
+        font-size: 15px;
+        font-weight: 600;
+        color:  White;
+        text-align: right;
+    }
+
+    .address .value {
+        text-align: right;
+        line-height: 1.5;
+    }
     .pdf-mode,
     .pdf-mode * {
         color: #000 !important;

@@ -68,6 +68,7 @@ wwwroot\lib\jquery-validation\LICENSE.md
 wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js
 wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js
 wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+wwwroot\lib\signalr\dist\browser\signalr.min.js
 wwwroot\uploads\products\208ad0fb50164d8e9c7759fa599f4e24.jpg
 wwwroot\uploads\products\53c7495bd0cb4d93acbc8b1735b49cf4.jpg
 wwwroot\uploads\products\68ec7a4f84224d66b99d492851538d5d.png

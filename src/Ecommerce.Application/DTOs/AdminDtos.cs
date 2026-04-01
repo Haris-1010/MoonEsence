@@ -21,4 +21,3 @@ public class AdminOrderSummaryDto
     public DateTime CreatedAt { get; set; }
     public decimal TotalAmount { get; set; }
 }
-
