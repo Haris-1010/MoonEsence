@@ -8,24 +8,39 @@
     <div class="container">
         <div class="pageHeader">
             <h1 class="pageTitle">Invoice #@Model.Order.OrderId</h1>
-            <p class="pageSubtitle"> COD invoice</p>
+            <p class="pageSubtitle">COD Invoice</p>
         </div>
 
-        <div class="panel invoicePanel">
-            <div class="invoiceMeta" >
-                <div style="display:flex;justify-content:space-between">
-                    <div class="label">Order date</div>
-                    <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd hh:mm tt")</strong>
+        <div class="panel invoicePanel"> 
+            <div class="watermark print-only">
+                <img src="~/images/moonessence.jpeg" alt="moon watermark" class="watermark-img" />
+            </div>
+
+           
+            <div class="invoiceMeta">
+
+                <div class="metaRow">
+                    <div class="label">Invoice #</div>
+                    <strong> @Model.Order.OrderId</strong>
                 </div>
-                <div style="display:flex;justify-content:space-between">
+                <div class="metaRow">
+                    <div class="label">Order date</div>
+                    <strong>@Model.Order.CreatedAt.ToString("yyyy-MM-dd")</strong>
+                </div>
+                <div class="metaRow">
+                    <div class="label">Order Time</div>
+                    <strong>@Model.Order.CreatedAt.ToString(" hh:mm tt")</strong>
+                </div>
+                <div class="metaRow">
                     <div class="label">Payment</div>
-                    <strong>COD <span style=" font-family: monospace;">(Cash on Delivery)</span></strong>
-                </div >
-                <div style="display:flex;justify-content:space-between">
+                    <strong>COD <span class="codText">(Cash on Delivery)</span></strong>
+                </div>
+                <div class="metaRow">
                     <div class="label">Status</div>
                     <strong>@Model.Order.Status</strong>
                 </div>
             </div>
+
             <div class="invoiceCustomerCard">
                 <div class="cardHeader">
                     <span>Customer Details</span>
@@ -64,13 +79,13 @@
                     </div>
                 </div>
             </div>
-            <br />
+
             <div class="invoiceTable">
                 <div class="invoiceRow invoiceHeader">
-                    <div>Item</div>
-                    <div class="right">Qty</div>
-                    <div class="right">Price</div>
-                    <div class="right">Total</div>
+                    <div class="itemCol">Item</div>
+                    <div class="right qtyCol">Qty</div>
+                    <div class="right priceCol">Price</div>
+                    <div class="right totalCol">Total</div>
                 </div>
                 @foreach (var item in Model.Order.Items)
                 {
@@ -91,7 +106,7 @@
                 }
             </div>
 
-            <!-- Updated Totals Section -->
+            <!-- Totals Section -->
             <div class="invoiceTotals">
                 <div class="invoiceRow">
                     <div class="muted">Subtotal</div>
@@ -100,146 +115,614 @@
                 <div class="invoiceRow">
                     <div class="muted">Delivery Charges</div>
                     <div>
-                        <strong style="color:@(Model.Order.DeliveryCharge == 0 ? "#28a745" : "inherit")">
+                        <strong class="deliveryCharge">
                             @(Model.Order.DeliveryCharge == 0 ? "FREE" : $"RS: {Model.Order.DeliveryCharge.ToString("0.00")}")
                         </strong>
                     </div>
                 </div>
-                <div class="invoiceRow" style="font-weight:bold; font-size:1.15em;  margin-top:8px;  ">
+                <div class="invoiceRow totalRow">
                     <div>Total Amount</div>
                     <div>RS: @Model.Order.TotalAmount.ToString("0.00")</div>
                 </div>
             </div>
 
             <div class="invoiceActions noPrint">
-                <button type="button" class="btn btnPrimary" onclick="window.print()">Print Invoice</button>
-
-                <button type="button" class="btn btnPrimary" onclick="downloadPDF()">
-                    Download PDF
-                </button>
+                <button type="button" class="btn btnPrimary" onclick="window.print()">🖨️ Print Invoice</button>
+                <button type="button" class="btn btnPrimary" onclick="downloadPDF()">📄 Download PDF</button>
             </div>
         </div>
     </div>
 </section>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
     const orderId = "@Model.Order.OrderId";
-
-    async function downloadPDF() {
+        async function downloadPDF() {
         const { jsPDF } = window.jspdf;
+        const invoice = document.querySelector(".invoicePanel");
+        const orderId = "@Model.Order.OrderId";
 
-        let invoice = document.querySelector(".invoicePanel");
-         
-        let noPrintEls = document.querySelectorAll(".noPrint");
-        noPrintEls.forEach(el => el.style.display = "none");
-         
-        invoice.classList.add("pdf-mode");
+        // Configuration
+        const config = {
+            scale: 2.5,
+            jpegQuality: 0.85,
+            pageWidth: 210,   // A4 width in mm
+            pageHeight: 297,  // A4 height in mm
+        };
 
-        const canvas = await html2canvas(invoice, {
-            scale: 2
-        });
+        // DOM helpers
+        const domUtils = {
+            hidePrintButtons: (hidden) => {
+                document.querySelectorAll(".noPrint").forEach(btn => {
+                    btn.style.display = hidden ? "none" : "";
+                });
+            },
 
-        const imgData = canvas.toDataURL("image/png");
+            addTempElement: (className, html, position = 'append') => {
+                if (invoice.querySelector(`.${className}`)) return;
+                const element = document.createElement('div');
+                element.className = className;
+                element.innerHTML = html;
+                invoice.style.position = 'relative';
 
-        const pdf = new jsPDF('p', 'mm', 'a4');
+                if (position === 'prepend') {
+                    invoice.insertBefore(element, invoice.firstChild);
+                } else {
+                    invoice.appendChild(element);
+                }
+            },
 
-        const imgWidth = 210;
-        const pageHeight = 295;
-        const imgHeight = canvas.height * imgWidth / canvas.width;
+            removeTempElements: () => {
+                ['.pdf-temp-watermark', '.pdf-temp-inv-num'].forEach(selector => {
+                    invoice.querySelector(selector)?.remove();
+                });
+            }
+        };
 
-        let heightLeft = imgHeight;
-        let position = 0;
+        try {
+            // Prepare DOM
+            domUtils.hidePrintButtons(true);
+            invoice.classList.add("pdf-mode");
 
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+            // Add temporary UI elements
+            domUtils.addTempElement('pdf-temp-watermark',
+                '<img src="~/images/moonessence.jpeg" alt="moon watermark" class="watermark-img" />');
+                 
+                   domUtils.addTempElement('pdf-temp-inv-num',
+                `<div style="text-align:center; width:100%; margin-bottom:20px;">
+                    <span style="font-size:20px; font-weight:700">Invoice #: ${orderId}</span>
+                </div>`, 'prepend'); 
+            const canvas = await html2canvas(invoice, {
+                scale: config.scale,
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: true,
+            });
 
-        while (heightLeft > 0) {
-            position = heightLeft - imgHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            // Convert to compressed image
+            const imageData = canvas.toDataURL("image/jpeg", config.jpegQuality);
+
+            // Calculate PDF dimensions
+            const imageHeight = (canvas.height * config.pageWidth) / canvas.width;
+
+            // Create and save PDF
+            const pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+
+            let remainingHeight = imageHeight;
+            let yPosition = 0;
+
+            pdf.addImage(imageData, 'JPEG', 0, yPosition, config.pageWidth, imageHeight);
+            remainingHeight -= config.pageHeight;
+
+            while (remainingHeight > 0) {
+                yPosition = remainingHeight - imageHeight;
+                pdf.addPage();
+                pdf.addImage(imageData, 'JPEG', 0, yPosition, config.pageWidth, imageHeight);
+                remainingHeight -= config.pageHeight;
+            }
+
+            pdf.save(`Invoice_${orderId}.pdf`);
+
+        } catch (error) {
+            console.error('PDF Error:', error);
+            alert('Unable to generate PDF. Please check console for details.');
+        } finally {
+            // Restore DOM
+            domUtils.removeTempElements();
+            domUtils.hidePrintButtons(false);
+            invoice.classList.remove("pdf-mode");
         }
-
-        pdf.save("Invoice_" + orderId + ".pdf");
-         
-        noPrintEls.forEach(el => el.style.display = "");
-        invoice.classList.remove("pdf-mode");
     }
 </script>
+
 <style>
-    @@media (max-width: 768px){
-        .invoiceActions{
-            display:flex;
-            justify-content:space-between
-
-        }
-
-        .btnPrimary{
-            width:44% !important;
-
-        }
-        .invoiceRow {
-            display: flex;
-            justify-content: space-between;
-        }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
+    body {
+        background: #000000;
+        color: #ffffff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .page {
+        background: #000000;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .pageHeader {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .pageTitle {
+        font-size: 28px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 8px;
+    }
+
+    .pageSubtitle {
+        font-size: 14px;
+        color: #aaaaaa;
+        letter-spacing: 1px;
+    }
+
+    .invoicePanel {
+        background: #0a0a0a;
+        border-radius: 20px;
+        padding: 30px;
+        position: relative;
+        border: 1px solid #222;
+    }
+
+    /* Meta Info */
+    .invoiceMeta {
+        background: #111111;
+        border-radius: 16px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+        border: 1px solid #222;
+    }
+
+    .metaRow {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #222;
+    }
+
+        .metaRow:last-child {
+            border-bottom: none;
+        }
+
+        .metaRow .label {
+            color: #aaaaaa;
+            font-size: 14px;
+        }
+
+        .metaRow strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+    .codText {
+        font-family: monospace;
+        color: #ffd700;
+    }
+
+    /* Customer Card */
     .invoiceCustomerCard {
-        background: #13171E;
-        border-radius: 12px; 
-        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-         
-        margin-top: 10px;
+        background: #111111;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #222;
     }
 
     .cardHeader {
-        font-size: 15px;
-        font-weight: 600;
-        color: white;
-        margin-bottom: 12px; 
-        padding-bottom: 6px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #ffd700;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #333;
         letter-spacing: 0.5px;
     }
 
     .cardBody {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
     }
 
     .rowItem {
         display: flex;
         justify-content: space-between;
-        align-items: start;
-        gap: 10px;
+        align-items: flex-start;
+        gap: 20px;
+        flex-wrap: wrap;
     }
 
-    .label {
-        font-size: 14px;
-        color:  White;
-        min-width: 80px;
-    }
+        .rowItem .label {
+            color: #aaaaaa;
+            font-size: 13px;
+            min-width: 80px;
+        }
 
-    .value {
-        font-size: 15px;
-        font-weight: 600;
-        color:  White;
-        text-align: right;
-    }
+        .rowItem .value {
+            color: #ffffff;
+            font-weight: 500;
+            text-align: right;
+            word-break: break-word;
+        }
 
     .address .value {
         text-align: right;
         line-height: 1.5;
     }
-    .pdf-mode,
-    .pdf-mode * {
-        color: #000 !important;
-        background: transparent !important;
+
+    /* Invoice Table */
+    .invoiceTable {
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        border: 1px solid #222;
+    }
+
+    .invoiceRow {
+        display: flex;
+        justify-content: space-between;
+        padding: 14px 16px;
+        border-bottom: 1px solid #222;
+        background: #0a0a0a;
+    }
+
+    .invoiceHeader {
+        background: #111111;
+        font-weight: 700;
+        color: #ffd700;
+        border-bottom: 1px solid #333;
+    }
+
+    .invoiceItem {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 2;
+    }
+
+    .invoiceThumb {
+        width: 45px;
+        height: 45px;
+        object-fit: cover;
+        border-radius: 10px;
+        background: #1a1a1a;
+    }
+
+    .right {
+        text-align: right;
+        min-width: 70px;
+    }
+
+    .itemCol {
+        flex: 2;
+    }
+
+    .qtyCol, .priceCol, .totalCol {
+        min-width: 70px;
+        text-align: right;
+    }
+
+    /* Totals */
+    .invoiceTotals {
+        background: #111111;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #222;
+    }
+
+        .invoiceTotals .invoiceRow {
+            background: transparent;
+            padding: 8px 0;
+            border-bottom: 1px solid #222;
+        }
+
+            .invoiceTotals .invoiceRow:last-child {
+                border-bottom: none;
+            }
+
+    .totalRow {
+        font-weight: bold;
+        font-size: 1.2em;
+        margin-top: 8px;
+        border-top: 1px solid #ffd700 !important;
+        padding-top: 12px !important;
+        color: #ffd700 !important;
+    }
+
+    .muted {
+        color: #aaaaaa;
+    }
+
+    .deliveryCharge {
+        color: #28a745;
+    }
+
+    /* Buttons */
+    .invoiceActions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 16px;
+    }
+
+    .btnPrimary {
+        background: #ffd700;
+        color: #000000;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 40px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+        .btnPrimary:hover {
+            background: #ffed4a;
+            transform: translateY(-2px);
+        }
+
+    /* Watermark and Invoice Number - Hidden on Screen */
+    .print-only {
+        display: none;
+    }
+
+    .watermark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    .watermark-img {
+        width: 70%;
+        max-width: 400px;
+        height: auto;
+        opacity: 0.15;
+    }
+
+    .invoiceNumber {
+        text-align: center;
+        font-size: 12px;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #333;
+    }
+
+    /* ========== RESPONSIVE STYLES ========== */
+    @@media (max-width: 768px) {
+        .page
+
+    {
+        padding: 10px;
+    }
+
+    .invoicePanel {
+        padding: 16px;
+    }
+
+    .invoiceRow {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .invoiceItem {
+        flex: 1 1 100%;
+    }
+
+    .right {
+        min-width: 55px;
+        font-size: 12px;
+    }
+
+    .invoiceActions {
+        justify-content: space-between;
+    }
+
+    .btnPrimary {
+        width: 48%;
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+    .rowItem {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+        .rowItem .value {
+            text-align: left;
+        }
+
+    .address .value {
+        text-align: left;
+    }
+
+    .cardHeader {
+        font-size: 14px;
+    }
+
+    }
+
+    @@media (min-width: 769px) and (max-width: 1024px) {
+        .invoicePanel
+
+    {
+        padding: 24px;
+    }
+
+    .invoiceRow {
+        padding: 12px 16px;
+    }
+
+    }
+
+    /* ========== PRINT & PDF STYLES ========== */
+    @@media print {
+        body, .page, .container, .invoicePanel
+
+    {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .noPrint {
+        display: none !important;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+        .promoBanner{
+            display:none
+        }
+    .watermark {
+        display: flex !important;
+        opacity: 0.12 !important;
+    }
+
+    .watermark-img {
+        width: 80%;
+        max-width: 500px;
+    }
+
+    .invoiceNumber {
+        display: block !important;
+        text-align: center;
+        font-size: 11px;
+        color: #666;
+        margin-bottom: 20px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    /* Force pure black text + gold accents */
+    .invoicePanel, .invoicePanel * {
+        color: #000000 !important;
+        background: white !important;
+        border-color: #cccccc !important;
         box-shadow: none !important;
     }
 
-        .pdf-mode .invoiceRow {
-            border-bottom: 1px solid #000 !important;
+    /* Gold elements */
+    .cardHeader, .invoiceHeader, .totalRow {
+        color: #B8860B !important;
+        background: white !important;
+    }
+
+    .invoiceHeader {
+        border-bottom: 2px solid #B8860B !important;
+    }
+
+    .totalRow {
+        border-top: 2px solid #B8860B !important;
+        color: #B8860B !important;
+    }
+
+    .invoiceCustomerCard, .invoiceMeta, .invoiceTotals, .invoiceTable {
+        border: 1px solid #ddd !important;
+        background: white !important;
+    }
+
+    .invoiceRow {
+        border-bottom: 1px solid #eee !important;
+    }
+
+    .metaRow .label, .muted, .rowItem .label {
+        color: #555 !important;
+    }
+
+    .metaRow strong, .rowItem .value {
+        color: #000 !important;
+    }
+
+    .codText {
+        color: #B8860B !important;
+    }
+
+    .deliveryCharge {
+        color: #28a745 !important;
+    }
+
+    }
+
+    /* PDF Mode (for html2canvas capture) */
+    .pdf-mode,
+    .pdf-mode * {
+        color: #000000 !important;
+        background: white !important;
+        border-color: #cccccc !important;
+        box-shadow: none !important;
+    }
+
+        .pdf-mode .cardHeader,
+        .pdf-mode .invoiceHeader,
+        .pdf-mode .totalRow {
+            color: #B8860B !important;
+            background: white !important;
         }
- </style>
+
+        .pdf-mode .invoiceHeader {
+            border-bottom: 2px solid #B8860B !important;
+        }
+
+        .pdf-mode .totalRow {
+            border-top: 2px solid #B8860B !important;
+        }
+
+        .pdf-mode .invoiceCustomerCard,
+        .pdf-mode .invoiceMeta,
+        .pdf-mode .invoiceTotals,
+        .pdf-mode .invoiceTable {
+            border: 1px solid #ddd !important;
+            background: white !important;
+        }
+
+        .pdf-mode .watermark {
+            display: flex !important;
+            opacity: 0.12 !important;
+        }
+
+        .pdf-mode .invoiceNumber {
+            display: block !important;
+            text-align: center;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ccc;
+        }
+</style>

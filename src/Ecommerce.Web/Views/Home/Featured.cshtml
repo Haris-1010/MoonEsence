@@ -12,18 +12,7 @@
      
 
      
-
-        <div class="filterBar subFilterBar" role="region" aria-label="Subcategory filters">
-           
-            @foreach (var sc in Model.SubCategories)
-            {
-                <button type="button"
-                        class="filterChip @(Model.SelectedSubCategoryId == sc.Id ? "is-active" : "")"
-                        data-subcategory-id="@sc.Id">
-                    @sc.Name
-                </button>
-            }
-        </div>
+         
         @await Html.PartialAsync("~/Views/Catalog/_ProductGrid.cshtml", Model.Products)
     </div>
 </section>

@@ -5,6 +5,13 @@
 
 <section class="page">
     <div class="container">
+        @if (TempData["ProductSuccess"] != null)
+        {
+            <div id="productToast" class="product-toast success">
+                <span>@TempData["ProductSuccess"]</span>
+                <button type="button" id="productToastClose" aria-label="Close">&times;</button>
+            </div>
+        }
         <div class="pageHeader">
             <h1 class="pageTitle">Products</h1>
             <p class="pageSubtitle">Admin</p>
@@ -71,3 +78,58 @@
     }
  
 </style>
+
+
+<style>
+    .product-toast {
+        position: fixed;
+        top: 30px;
+        right: 30px;
+        z-index: 2000;
+        padding: 14px 22px;
+        border-radius: 8px;
+        color: #fff;
+        background: #10b981;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 1rem;
+        animation: fadeIn .3s;
+    }
+
+        .product-toast button {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.9);
+            font-size: 22px;
+            line-height: 1;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+<script>
+    (function () {
+        const toast = document.getElementById('productToast');
+        if (!toast) return;
+        const closeBtn = document.getElementById('productToastClose');
+        function hide() {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }
+        setTimeout(hide, 3500);
+        closeBtn?.addEventListener('click', hide);
+    })();
+</script>

@@ -71,7 +71,8 @@ public class AdminProductsController : Controller
 
         var imageUrl = await SaveProductImage(imageFile, cancellationToken);
         var id = await _adminCatalog.CreateProductAsync(vm.Create, imageUrl, cancellationToken);
-        return Redirect($"/Admin/Products/Edit/{id}");
+        TempData["ProductSuccess"] = "Product created successfully!";
+        return Redirect("/Admin/Products");
     }
 
     [HttpGet("/Admin/Products/Edit/{productId:int}")]
@@ -121,7 +122,8 @@ public class AdminProductsController : Controller
         vm.Update.Id = productId;
 
         await _adminCatalog.UpdateProductAsync(vm.Update, imageUrl, cancellationToken);
-        return Redirect($"/Admin/Products/Edit/{productId}");
+        TempData["ProductSuccess"] = "Product updated successfully!";
+        return Redirect("/Admin/Products");
     }
 
     [HttpPost("/Admin/Products/Delete/{productId:int}")]

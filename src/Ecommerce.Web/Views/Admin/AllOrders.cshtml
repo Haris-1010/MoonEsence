@@ -65,7 +65,11 @@
                         <tr data-date="@o.CreatedAt.ToString("yyyy-MM-dd")">
                             <td>
                                 <div class="order-id">
-                                    <i class="fas fa-hashtag"></i>
+                                    <a href="/Admin/Orders/Details/@o.OrderId"
+                                       title="View Order"
+                                       style="color: inherit; text-decoration: none;">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                     <span class="order-number">@o.OrderId</span>
                                 </div>
                             </td>
@@ -560,8 +564,8 @@
             background: #d4af37;
         }
 </style>
-
-<script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
+ 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script>
     // Add data-labels for mobile responsiveness
     document.addEventListener('DOMContentLoaded', function () {

@@ -8,6 +8,7 @@ wwwroot\images\attar-hero.png
 wwwroot\images\attar-placeholder.jpg
 wwwroot\images\attar-placeholder.png
 wwwroot\images\moon.png
+wwwroot\images\moonessence.jpeg
 wwwroot\images\terms-hero.jpg
 wwwroot\js\app.js
 wwwroot\js\site.js

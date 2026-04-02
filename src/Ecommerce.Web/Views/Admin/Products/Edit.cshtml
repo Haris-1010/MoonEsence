@@ -39,7 +39,7 @@
                 </div>
                 <div class="formField">
                     <label asp-for="Create.SubCategoryId">Sub category</label>
-                    <select asp-for="Create.SubCategoryId" class="input">
+                    <select asp-for="Create.SubCategoryId" class="input" style="background-color:  #0B0F17; color: white;">
                         <option value="">Select</option>
                         @foreach (var sc in Model.SubCategories)
                         {
@@ -117,6 +117,9 @@
                 @(isEdit ? "Save changes" : "Create product")
             </button>
         </form>
+
+     
     </div>
 </section>
+ 
 

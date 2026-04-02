@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div class="filterBar" role="region" aria-label="Category filters">
+        @* <div class="filterBar" role="region" aria-label="Category filters">
             <button type="button" class="filterChip is-active" data-category-id="">All</button>
             @foreach (var c in Model.Categories)
             {
@@ -53,7 +53,7 @@
                     @sc.Name
                 </button>
             }
-        </div>
+        </div> *@
         @await Html.PartialAsync("~/Views/Catalog/_ProductGrid.cshtml", Model.Products)
     </div>
 </section>

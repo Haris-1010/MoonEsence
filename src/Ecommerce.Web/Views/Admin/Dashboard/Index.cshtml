@@ -2,7 +2,9 @@
 @{
     ViewData["Title"] = "Admin Dashboard";
 }
-
+@{
+    var today = DateTime.UtcNow.ToString("yyyy-MM-dd");
+}
 <section class="page">
     <div class="container">
         <div class="pageHeader">
@@ -20,7 +22,8 @@
 
         <div class="adminStats">
             <div style="display:flex">
-                <div class="statCard">
+                <a href="@Url.Action("Products", "Admin")" style="text-decoration:none">
+                <div  class="statCard">
                     <div class="statIcon">
                         <i class="fas fa-box"></i>
                     </div>
@@ -28,36 +31,44 @@
                         <div class="statValue">@Model.Stats.TotalProducts</div>
                         <div class="statLabel">Total Products</div>
                     </div>
-                </div>
-                <div class="statCard">
-                    <div class="statIcon">
-                        <i class="fas fa-tags"></i>
                     </div>
-                    <div class="statInfo">
-                        <div class="statValue">@Model.Stats.TotalCategories</div>
-                        <div class="statLabel">Categories</div>
-                    </div>
-               </div>
-            </div> 
+                </a>
+                <a href="@Url.Action("Categories", "Admin")" style="text-decoration:none">
+                    <div class="statCard">
+                        <div class="statIcon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="statInfo">
+                            <div class="statValue">@Model.Stats.TotalCategories</div>
+                            <div class="statLabel">Total Categories</div>
+                        </div>
+                     </div>
+               </a>
+            </div>  
             <div style="display:flex">
-            <div class="statCard">
-                <div class="statIcon">
-                    <i class="fas fa-shopping-cart"></i>
-                </div>
-                <div class="statInfo">
-                    <div class="statValue">@Model.Stats.TotalOrders</div>
-                    <div class="statLabel">Total Orders</div>
-                </div>
-            </div>
-            <div class="statCard">
-                <div class="statIcon">
-                    <i class="fas fa-calendar-day"></i>
-                </div>
-                <div class="statInfo">
-                    <div class="statValue">@Model.Stats.NewOrdersToday</div>
-                    <div class="statLabel">New Today</div>
-                </div>
-            </div>
+                <a href="@Url.Action("Orders", "Admin")" style="text-decoration:none">
+                    <div class="statCard">
+                        <div class="statIcon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="statInfo">
+                            <div class="statValue">@Model.Stats.TotalOrders</div>
+                            <div class="statLabel">Total Orders</div>
+                        </div>
+                    </div>
+                </a>
+                <a href="@Url.Action("Orders", "Admin", new { status = "", fromUtc = today, toUtc = today })" style="text-decoration:none">
+                  
+                    <div class="statCard">
+                        <div class="statIcon">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="statInfo">
+                            <div class="statValue">@Model.Stats.NewOrdersToday</div>
+                            <div class="statLabel">New Today</div>
+                        </div>
+                    </div>  
+                </a>
             </div>
             @if (Model.Stats.PendingOrders > 0)
             {
@@ -670,11 +681,28 @@
         justify-content: flex-end;
         margin-top: 0.5rem;
     }
+        @@media (min-width: 768px) {
+            .adminStats
+
+    {
+        grid-template-columns: repeat(3, 1fr);
+    }
 
     }
-</style>
 
-<script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
+    /* Optional: extra large screens: 4 per row */
+    @@media (min-width: 1200px) {
+        .adminStats
+
+    {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    }
+    }
+</style>
+<!-- Font Awesome Free CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
 <script>
     // Update order count badge

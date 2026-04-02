@@ -11,7 +11,7 @@
             <p class="pageSubtitle">Free delivery on 2+ items. Grab your favorites before stock runs out!</p>
         </div>
  
-        <div class="filterBar" role="region" aria-label="Category filters">
+       @*  <div class="filterBar" role="region" aria-label="Category filters">
             <button type="button" class="filterChip is-active" data-category-id="">All</button>
             @foreach (var c in Model.Categories)
             {
@@ -21,9 +21,9 @@
                     @c.Name
                 </button>
             }
-        </div>
+        </div> *@
 
-        <div class="filterBar subFilterBar" role="region" aria-label="Subcategory filters">
+       @*  <div class="filterBar subFilterBar" role="region" aria-label="Subcategory filters">
             <button type="button"
                     class="filterChip @(Model.SelectedSubCategoryId == null ? "is-active" : "")"
                     data-subcategory-id="">
@@ -37,7 +37,7 @@
                     @sc.Name
                 </button>
             }
-        </div>
+        </div> *@
         @await Html.PartialAsync("~/Views/Catalog/_ProductGrid.cshtml", Model.Products)
     </div>
 </section>

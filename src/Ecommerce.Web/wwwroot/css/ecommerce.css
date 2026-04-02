@@ -246,15 +246,31 @@ body{
   font-weight:700;
   font-size:14px;
 }
-.btnPrimary{
-  background: rgba(34,197,94,.18);
-  border-color: rgba(34,197,94,.55);
-  color: #bff5cf;
+.btnPrimary {
+    background: rgba(255, 215, 0, 0.18); 
+    border-color: rgba(255, 215, 0, 0.55); 
+    color: #FFD700;  
+    transition: all 0.3s ease;
 }
-.btnGhost{
-  background: rgba(255,255,255,.03);
-  color: var(--text);
+
+    .btnPrimary:hover {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 223, 0, 0.18));
+        border-color: #FFC700;  
+        color: #FFD700;  
+        transform: translateY(-2px);
+    }
+.btnGhost {
+    background: rgba(200, 200, 200, 0.1);  
+    color: #f0f0f0;  
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
 }
+
+    .btnGhost:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffd700;  
+        transform: translateY(-2px);
+    }
 .btn:active{ transform: translateY(1px); }
 .btn.btnPrimary{ width: 100%; }
 .productActions{
