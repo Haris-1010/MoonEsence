@@ -81,8 +81,7 @@ INNER JOIN ""Categories"" c ON c.""Id"" = sc.""CategoryId""
 WHERE (@Search IS NULL OR (p.""Name"" ILIKE '%' || @Search || '%' OR p.""Description"" ILIKE '%' || @Search || '%'))
   AND (@CategoryId IS NULL OR c.""Id"" = @CategoryId)
   AND sc.""IsActive"" = TRUE
-  AND c.""IsActive"" = TRUE
-  AND p.""IsActive"" = TRUE;";
+  AND c.""IsActive"" = TRUE ;";
 
         const string sql = @"
 SELECT
@@ -100,7 +99,7 @@ FROM ""Products"" p
 INNER JOIN ""SubCategories"" sc ON sc.""Id"" = p.""SubCategoryId""
 INNER JOIN ""Categories"" c ON c.""Id"" = sc.""CategoryId""
 WHERE (@Search IS NULL OR (p.""Name"" ILIKE '%' || @Search || '%' OR p.""Description"" ILIKE '%' || @Search || '%'))
-  AND p.""IsActive"" = TRUE
+ 
   AND sc.""IsActive"" = TRUE
   AND c.""IsActive"" = TRUE
   AND (@CategoryId IS NULL OR c.""Id"" = @CategoryId)
