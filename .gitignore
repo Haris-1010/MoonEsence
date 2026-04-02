@@ -2,4 +2,44 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio files
+.vs/
+*.ncb
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# DLLs, executables, pdbs
+*.dll
+*.exe
+*.pdb
+
+# Logs
+*.log
+
+# OS generated
+.DS_Store
+Thumbs.db

@@ -32,8 +32,7 @@ public class AdminProductsController : Controller
         var ext = Path.GetExtension(imageFile.FileName);
         if (string.IsNullOrWhiteSpace(ext) || !allowed.Contains(ext))
             return null;
-
-        // Store in blob (or local fallback) and return a URL.
+         
         await using var stream = imageFile.OpenReadStream();
         return await _blobStorage.UploadAsync(stream, imageFile.FileName, imageFile.ContentType, "products", cancellationToken);
     }

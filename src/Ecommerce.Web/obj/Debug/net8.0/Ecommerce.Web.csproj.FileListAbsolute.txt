@@ -301,6 +301,7 @@ C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\Azure.Core.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\Azure.Storage.Blobs.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\Azure.Storage.Common.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\CloudinaryDotNet.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\Dapper.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\Microsoft.Bcl.Cryptography.dll
@@ -323,8 +324,10 @@ C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\Npgsql.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\System.ClientModel.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\System.Diagnostics.EventLog.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\System.IO.Hashing.dll
@@ -386,5 +389,3 @@ C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\obj\Debug
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\obj\Debug\net8.0\Ecommerce.Web.pdb
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\obj\Debug\net8.0\Ecommerce.Web.genruntimeconfig.cache
 C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\obj\Debug\net8.0\ref\Ecommerce.Web.dll
-C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\Npgsql.dll
-C:\Development\MoonEsence\MoonEsence\ecommerce-store\src\Ecommerce.Web\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll

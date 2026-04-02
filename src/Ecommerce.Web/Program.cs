@@ -76,7 +76,18 @@ builder.Services.AddSingleton<IPasswordHasher, Pbkdf2PasswordHasher>();
 
 var azureConn = builder.Configuration["Azure:BlobConnectionString"];
 var azureContainer = builder.Configuration["Azure:BlobContainerName"];
-if (!string.IsNullOrWhiteSpace(azureConn) && !string.IsNullOrWhiteSpace(azureContainer))
+var cloudName = builder.Configuration["CloudinarySettings:CloudName"];
+var apiKey = builder.Configuration["CloudinarySettings:ApiKey"];
+var apiSecret = builder.Configuration["CloudinarySettings:ApiSecret"];
+
+if (!string.IsNullOrWhiteSpace(cloudName) &&
+    !string.IsNullOrWhiteSpace(apiKey) &&
+    !string.IsNullOrWhiteSpace(apiSecret))
+{
+    builder.Services.AddSingleton<IBlobStorage, CloudinaryBlobStorage>();
+}
+else if (!string.IsNullOrWhiteSpace(azureConn) &&
+         !string.IsNullOrWhiteSpace(azureContainer))
 {
     builder.Services.AddSingleton<IBlobStorage>(_ => new AzureBlobStorage(azureConn, azureContainer));
 }
@@ -85,10 +96,9 @@ else
     builder.Services.AddSingleton<IBlobStorage>(sp =>
     {
         var env = sp.GetRequiredService<IWebHostEnvironment>();
-        return new LocalBlobStorage(env.WebRootPath, rootRelative: "uploads");
+        return new LocalBlobStorage(env.WebRootPath, "uploads");
     });
 }
-
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
