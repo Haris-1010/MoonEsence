@@ -57,9 +57,14 @@
 
             // Promo message logic
             if (promoMsgEl) {
-                if (summary.totalItems === 1) {
+              
+                if (summary.totalItems === 0) {
+                    promoMsgEl.innerHTML = "";
+                }
+                else if (summary.totalItems === 1) {
                     promoMsgEl.innerHTML = `<span style="color:orange;font-weight:600;">Add one more item to get free delivery.</span>`;
-                } else {
+                }
+                else {
                     promoMsgEl.innerHTML = `<span style="color:green;font-weight:600;">🎉 Free delivery applied (2 or more items)</span>`;
                 }
             }

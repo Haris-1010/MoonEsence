@@ -1,16 +1,16 @@
 @model Ecommerce.Web.ViewModels.OrderHistoryViewModel
 @{
-    ViewData["Title"] = "Order history";
+    ViewData["Title"] = "Track Order";
 }
 
 <section class="page">
     <div class="container">
-        <h1 class="pageTitle">Order history</h1>
+        <h1 class="pageTitle">Track Order</h1>
 
         <form method="get" action="/Orders/History" class="form" style="margin-top:8px;">
             <div class="formField">
                 <label>Email or phone</label>
-                <input name="emailOrPhone" class="input" placeholder="e.g. admin@local or 0300..." />
+                <input name="emailOrPhone" class="input" placeholder="e.g. ...@@gmail.com or 0300..." />
             </div>
             <button type="submit" class="btn btnPrimary">Find orders</button>
         </form>

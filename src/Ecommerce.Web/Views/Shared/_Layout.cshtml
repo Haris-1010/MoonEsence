@@ -106,8 +106,8 @@
                     else
                     {
                         <a class="navLink" href="/">Shop</a>
+                        <a class="navLink" href="/About">About Us</a>
                         <a class="navLink" href="/Orders/History">Track Order</a>
-                        <a class="navLink" href="/About">About Us</a> 
                         <a class="navLink" href="/Contact">Contact Us</a>
                         @if (User?.Identity?.IsAuthenticated == true)
                         {
@@ -195,14 +195,14 @@
             overflow: hidden;
             white-space: nowrap;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            position: relative; /* Needed for absolute positioning of text */
-            height: 36px; /* Adjust as needed for your design */
+            position: relative;  
+            height: 35px;  
         }
 
         .promoText {
             display: inline-block;
             position: absolute;
-            right: -100%; /* Start fully off-screen to the right */
+            right: -100%; 
             top: 0;
             white-space: nowrap;
             padding: 5px 0;
@@ -216,6 +216,11 @@
             .promoText {
                 font-size: 14px;
                 animation-duration: 9s;
+            }
+
+            .promoBanner {
+              
+                height: 25px;
             }
         }
 
