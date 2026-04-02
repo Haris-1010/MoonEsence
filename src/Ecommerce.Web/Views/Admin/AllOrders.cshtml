@@ -62,7 +62,7 @@
                 <tbody>
                     @foreach (var o in Model)
                     {
-                        <tr data-date="@o.CreatedAt.ToString("yyyy-MM-dd")">
+                        <tr data-date="@o.CreatedAt.ToString("d MMMM yyyy")">
                             <td>
                                 <div class="order-id">
                                     <a href="/Admin/Orders/Details/@o.OrderId"
@@ -97,7 +97,7 @@
                                     @{
                                         // Format date as 30/11/2025 8:27 pm
                                         var dateTime = o.CreatedAt;
-                                        var formattedDate = dateTime.ToString("dd/MM/yyyy");
+                                        var formattedDate = dateTime.ToString("d MMMM yyyy");
                                         var formattedTime = dateTime.ToString("h:mm tt").ToLower();
                                         <span>@formattedDate @formattedTime</span>
                                     }

@@ -49,7 +49,7 @@
                        name="fromUtc"
                        class="input"
                        style="background-color: #0B0F17; color: white;"
-                       value="@(Model.FromUtc.HasValue? Model.FromUtc.Value.ToString("yyyy-MM-dd") : "")" />
+                       value="@(Model.FromUtc.HasValue? Model.FromUtc.Value.ToString("d MMMM yyyy") : "")" />
             </div>
 
             <div class="formField">
@@ -58,7 +58,7 @@
                        name="toUtc"
                        class="input"
                        style="background-color: #0B0F17; color: white;"
-                       value="@(Model.ToUtc.HasValue? Model.ToUtc.Value.ToString("yyyy-MM-dd") : "")" />
+                       value="@(Model.ToUtc.HasValue? Model.ToUtc.Value.ToString("yd MMMM yyyy") : "")" />
             </div>
 
             <div style="display: flex; gap: 10px;">
@@ -77,11 +77,11 @@
                 }
                 @if (Model.FromUtc.HasValue)
                 {
-                    <span class="filterTag">From: @Model.FromUtc.Value.ToString("yyyy-MM-dd")</span>
+                    <span class="filterTag">From: @Model.FromUtc.Value.ToString("d MMMM yyyy")</span>
                 }
                 @if (Model.ToUtc.HasValue)
                 {
-                    <span class="filterTag">To: @Model.ToUtc.Value.ToString("yyyy-MM-dd")</span>
+                    <span class="filterTag">To: @Model.ToUtc.Value.ToString("d MMMM yyyy")</span>
                 }
             </div>
         }
@@ -102,7 +102,7 @@
                     <div class="orderCard">
                         <div class="orderCardHeader">
                             <strong class="orderId">Order #@o.OrderId</strong>
-                            <span class="orderDate">@o.CreatedAt.ToString("yyyy-MM-dd hh:mm tt")  </span>
+                            <span class="orderDate">@o.CreatedAt.ToString("d MMMM yyyy h:mm tt")  </span>
                         </div>
 
                         <div class="orderCardContent">
@@ -174,8 +174,7 @@
         const now = new Date();
         let fromDate = null;
         let toDate = null;
-
-        // Helper to get UTC date string (YYYY-MM-DD)
+         
         function getUTCDateString(date) {
             return date.toISOString().split('T')[0];
         }
