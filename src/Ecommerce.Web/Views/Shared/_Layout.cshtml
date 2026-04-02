@@ -106,10 +106,8 @@
                     else
                     {
                         <a class="navLink" href="/">Shop</a>
-                        <a class="navLink" href="/Orders/History">Order history</a>
-                        <a class="navLink" href="/About">About Us</a>
-                        <a class="navLink" href="/Privacy">Privacy Policy</a>
-                        <a class="navLink" href="/Terms">Terms & Conditions</a>
+                        <a class="navLink" href="/Orders/History">Track Order</a>
+                        <a class="navLink" href="/About">About Us</a> 
                         <a class="navLink" href="/Contact">Contact Us</a>
                         @if (User?.Identity?.IsAuthenticated == true)
                         {
@@ -165,7 +163,7 @@
             </div>
             <div class="cartFooter">
                 <a id="checkoutBtn" class="btn btnPrimary" href="/Checkout">Checkout</a>
-                <a class="btn btnGhost" href="/Orders/History">Order history</a>
+                <a class="btn btnGhost" href="/Orders/History">Track Order</a>
             </div>
         </aside>
 
