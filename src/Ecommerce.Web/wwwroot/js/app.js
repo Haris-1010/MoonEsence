@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "";
 
     $.ajaxSetup({
@@ -42,6 +42,7 @@
         const itemsEl = document.getElementById("cartItems");
         const subtotalEl = document.getElementById("cartSubtotal");
         const totalItemsEl = document.getElementById("cartTotalItems");
+        const promoMsgEl = document.getElementById("cartPromoMsg");
 
         if (!itemsEl || !badge || !subtotalEl || !totalItemsEl) return; // page doesn't show cart
 
@@ -53,6 +54,15 @@
             badge.textContent = summary.totalItems ?? 0;
             totalItemsEl.textContent = summary.totalItems ?? 0;
             subtotalEl.textContent = (summary.subtotal ?? 0).toFixed(2);
+
+            // Promo message logic
+            if (promoMsgEl) {
+                if (summary.totalItems === 1) {
+                    promoMsgEl.innerHTML = `<span style="color:orange;font-weight:600;">Add one more item to get free delivery.</span>`;
+                } else {
+                    promoMsgEl.innerHTML = `<span style="color:green;font-weight:600;">🎉 Free delivery applied (2 or more items)</span>`;
+                }
+            }
 
             if (!lines.length) {
                 itemsEl.innerHTML = `<div class="emptyState" style="padding:12px;color:rgba(229,231,235,.8)">Your cart is empty.</div>`;
@@ -67,7 +77,6 @@
                         <div>
                             <p class="cartItemTitle">${escapeHtml(l.productName)}</p>
                             <div class="cartItemMeta">Rs: ${(l.unitPrice ?? 0).toFixed(2)} each</div>
-
                             <div class="cartQtyRow">
                                 <div class="qtyStepper">
                                     <button type="button" class="qtyBtn" data-action="dec" aria-label="Decrease quantity">-</button>
@@ -95,11 +104,29 @@
         }[m]));
     }
 
+    // Add this helper to check if product is already in cart
+    async function isProductInCart(productId) {
+        try {
+            const res = await $.getJSON("/Cart/Get");
+            const lines = res.summary?.lines || [];
+            return lines.some(l => l.productId === productId);
+        } catch {
+            return false;
+        }
+    }
+
     // Cart line interactions (delegate)
     $(document).on("click", ".addToCartBtn", async function () {
         const productId = Number($(this).data("product-id"));
         const qty = Number($(this).data("qty") || 1);
         if (!productId || qty < 1) return;
+
+        // Prevent adding if already in cart
+        if (await isProductInCart(productId)) {
+            // Optionally show a message: "Already in cart"
+            openCart();
+            return;
+        }
 
         try {
             const res = await $.post("/Cart/Add", { productId, quantity: qty });
@@ -119,6 +146,9 @@
         if (!productId || qty < 1) return;
 
         try {
+            // Clear the cart first
+            await $.post("/Cart/Clear");
+            // Add only the selected item
             await $.post("/Cart/Add", { productId, quantity: qty });
         } catch {
             // even if add fails, let user try again from cart

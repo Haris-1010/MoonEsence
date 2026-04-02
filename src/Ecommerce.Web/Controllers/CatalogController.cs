@@ -35,6 +35,8 @@ public class CatalogController : Controller
         if (product is null)
             return NotFound();
 
+        ViewData["ProductImageUrl"] = product.ImageUrl; 
+
         var vm = new ProductDetailViewModel { Product = product };
         return View("~/Views/Catalog/Details.cshtml", vm);
     }

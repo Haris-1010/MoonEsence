@@ -84,5 +84,12 @@ public class CartController : Controller
         var summary = await _cartService.BuildCartSummaryAsync(lines, cancellationToken);
         return Json(new { ok = true, summary });
     }
+
+    [HttpPost("/Cart/Clear")]
+    public IActionResult Clear()
+    {
+        CartSessionStore.ClearCartLines(HttpContext.Session);
+        return Ok();
+    }
 }
 
